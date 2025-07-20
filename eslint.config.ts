@@ -1,22 +1,23 @@
-import eslintPluginUnusedImports from 'eslint-plugin-unused-imports';
+import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default [
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    files: ['src/**/*.ts', 'src/**/*.tsx'],
-    plugins: {
-      'unused-imports': eslintPluginUnusedImports,
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
     rules: {
       'no-console': 'warn',
-      'no-debugger': 'error',
-      'require-await': 'warn',
-      '@typescript-eslint/no-unused-vars': 'off',
-      'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': [
-        'warn',
-        { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' }
-      ]
-    }
-  }
-);
+      'require-await': 'error',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+    },
+  },
+];
