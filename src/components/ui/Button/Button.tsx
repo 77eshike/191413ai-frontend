@@ -7,6 +7,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost';
   children: ReactNode;
 }
+// ²âÊÔ CI ×Ô¶¯Ö´ÐÐ
 
 export default function Button({
   variant = 'primary',
