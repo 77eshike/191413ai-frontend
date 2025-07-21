@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --config eslint.config.js --ext .ts,.tsx",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky install"
   },
