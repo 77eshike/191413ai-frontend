@@ -24,9 +24,9 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-        
+
       - name: Run tests with coverage
-        run: npx vitest run --coverage  
+        run: npx vitest run --coverage
 
       - name: Check Prettier formatting
         run: npx prettier --check .
