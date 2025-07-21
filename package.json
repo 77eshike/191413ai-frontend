@@ -1,12 +1,9 @@
 {
-  "name": "191413ai-frontend",
-  "version": "1.0.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "eslint . --config eslint.config.js --ext .ts,.tsx",
     "format": "prettier --write .",
     "prepare": "husky install"
   },
@@ -14,8 +11,10 @@
     "@types/node": "^20.11.30",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "8.57.1",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-unused-imports": "^4.1.4",
     "husky": "^9.0.11",
+    "lint-staged": "^15.5.2",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
