@@ -1,0 +1,24 @@
+{
+  "types": [
+    { "type": "feat", "section": "‚ú® Features" },
+    { "type": "fix", "section": "Ì†ΩÌ∞õ Bug Fixes" },
+    { "type": "docs", "section": "Ì†ΩÌ≥ù Documentation" },
+    { "type": "style", "section": "Ì†ΩÌ≤é Styles" },
+    { "type": "refactor", "section": "Ì†ΩÌ≥¶ Code Refactoring" },
+    { "type": "perf", "section": "Ì†ΩÌ∫Ä Performance Improvements" },
+    { "type": "test", "section": "‚úÖ Tests" },
+    { "type": "build", "section": "Ì†ΩÌ≥¶ Build System" },
+    { "type": "ci", "section": "Ì†ΩÌ¥ß CI/CD" },
+    { "type": "chore", "section": "Ì†æÌ∑π Chores", "hidden": true },
+    { "type": "revert", "section": "‚è™ Reverts" }
+  ],
+  "commitUrlFormat": "https://github.com/<your-org>/<your-repo>/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/<your-org>/<your-repo>/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "https://github.com/<your-org>/<your-repo>/issues/{{id}}",
+  "userUrlFormat": "https://github.com/{{user}}",
+  "skip": {
+    "tag": false
+  },
+  "header": "# Ì†ΩÌ≥¶ Changelog\n\nAll notable changes to this project will be documented in this file.",
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}"
+}
