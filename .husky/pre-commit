@@ -1,7 +1,8 @@
 cat << 'EOF' > .husky/pre-commit
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
-
+# 调用模块化脚本
+.husky/lint.sh
 echo "?? Running ESLint & Prettier checks..."
 
 npx eslint . --config eslint.config.js --ext .ts,.tsx
