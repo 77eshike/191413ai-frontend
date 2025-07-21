@@ -7,37 +7,27 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  lint-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: ?? Checkout source code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: ?? Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            .eslintcache
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: ?? Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      - name: ?? Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: ?? Run Prettier (check formatting)
+      - name: Run Prettier Format Check
         run: npx prettier --check .
 
-      - name: ?? Run Lint (ESLint)
-        run: npx eslint . --config eslint.config.js
+      - name: Run ESLint
+        run: npx eslint . --ext .ts,.tsx
 
-      - name: ?? Run Unit Tests (Vitest)
-        run: npm run test -- --coverage
+      - name: Run Vitest Unit Tests
+        run: npx vitest run
+
+      - name: Commitlint (check last commit)
+        run: npx --no -- commitlint --from=HEAD~1 --to=HEAD

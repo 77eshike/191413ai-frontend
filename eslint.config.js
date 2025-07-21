@@ -1,7 +1,7 @@
-import js from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import prettier from 'eslint-config-prettier'
-import unusedImports from 'eslint-plugin-unused-imports'
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-config-prettier';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
@@ -25,4 +25,4 @@ export default [
     },
   },
   prettier,
-]
+];
