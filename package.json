@@ -1,11 +1,12 @@
 {
   "name": "191413ai-frontend",
-  "version": "1.0.4",
+  "version": "1.0.1",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --config eslint.config.js --ext .ts,.tsx",
+    "lint": "eslint . --config eslint.config.mjs --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --write .",
     "prepare": "husky install",
     "release": "standard-version",
@@ -14,7 +15,7 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,md}": [
       "prettier --write",
-      "eslint --fix"
+      "eslint --fix --config eslint.config.mjs"
     ]
   },
   "config": {
