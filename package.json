@@ -1,17 +1,35 @@
 {
+  "name": "191413ai-frontend",
+  "version": "1.0.4",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --config eslint.config.js --ext .ts,.tsx",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "standard-version",
+    "commit": "cz"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
   "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
     "@types/node": "^20.11.30",
     "@typescript-eslint/eslint-plugin": "8.37.0",
     "@typescript-eslint/parser": "8.37.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "8.57.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
@@ -22,14 +40,9 @@
     "husky": "9.1.7",
     "lint-staged": "15.5.2",
     "prettier": "3.6.2",
+    "standard-version": "^9.5.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
     "vitest": "^1.6.0"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
   }
 }
