@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - ".storybook/**"
-      - "src/components/**"
-      - "src/stories/**"
-      - "package.json"
-      - "yarn.lock"
-      - "tsconfig.json"
-      - ".github/workflows/storybook-deploy.yml"
+      - '.storybook/**'
+      - 'src/components/**'
+      - 'src/stories/**'
+      - 'package.json'
+      - 'yarn.lock'
+      - 'tsconfig.json'
+      - '.github/workflows/storybook-deploy.yml'
 
 jobs:
   deploy:
