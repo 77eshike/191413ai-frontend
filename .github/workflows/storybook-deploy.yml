@@ -5,41 +5,36 @@ on:
     branches:
       - main
     paths:
-      - '.storybook/**'
-      - 'src/components/**'
-      - 'src/stories/**'
-      - 'package.json'
-      - 'yarn.lock'
-      - 'tsconfig.json'
-      - '.github/workflows/storybook-deploy.yml'
+      - "src/**"
+      - ".storybook/**"
+      - "package.json"
+      - "tsconfig.json"
+      - "vite.config.ts"
+      - "storybook.config.ts"
 
 jobs:
   deploy:
-    name: Build and Deploy Storybook
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: yarn
+          cache: "npm"
 
-      - name: 📥 Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: npm ci
 
-      - name: 🛠 Build Storybook
-        run: |
-          yarn build-storybook
-          echo 'storybook.191413.ai' > storybook-static/CNAME
-          touch storybook-static/.nojekyll
+      - name: Build Storybook
+        run: npm run build-storybook
 
-      - name: 🚀 Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./storybook-static
-          keep_files: true
+          cname: storybook.191413.ai
