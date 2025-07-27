@@ -10,21 +10,21 @@ services:
       - NODE_ENV=production
     restart: always
     expose:
-      - "3000"
+      - '3000'
     networks:
       - nginx-proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.191413ai.rule=Host(`191413.ai`)"
-      - "traefik.http.routers.191413ai.entrypoints=websecure"
-      - "traefik.http.routers.191413ai.tls.certresolver=myresolver"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.191413ai.rule=Host(`191413.ai`)'
+      - 'traefik.http.routers.191413ai.entrypoints=websecure'
+      - 'traefik.http.routers.191413ai.tls.certresolver=myresolver'
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
     container_name: nginx-proxy
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - nginx_certs:/etc/nginx/certs

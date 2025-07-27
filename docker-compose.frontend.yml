@@ -14,7 +14,7 @@ services:
       - LETSENCRYPT_HOST=191413.ai
       - LETSENCRYPT_EMAIL=77eshike@gmail.com
     expose:
-      - "3000"
+      - '3000'
     restart: always
 
 networks:

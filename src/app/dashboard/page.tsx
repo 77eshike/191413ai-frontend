@@ -50,7 +50,7 @@ export default function DashboardPage() {
   }, []);
 
   const filteredProjects = projects.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
