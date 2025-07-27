@@ -17,3 +17,4 @@ out
 #    chmod +x .husky/*
 #
 # 3. 合并后 CI 自动构建 Storybook 并部署到 gh-pages node_modules/
+node_modules/
