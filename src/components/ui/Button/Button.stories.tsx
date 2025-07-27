@@ -1,25 +1,40 @@
-// src/components/ui/Button/Button.stories.tsx
+// src/components/ui/Button.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
+  title: 'Components/Button',
   component: Button,
   tags: ['autodocs'],
-  title: 'UI/Button',
+  argTypes: {
+    onClick: { action: 'clicked' },
+    variant: {
+      control: 'radio',
+      options: ['primary', 'secondary'],
+    },
+  },
 };
-
 export default meta;
+
 type Story = StoryObj<typeof Button>;
 
-export const Default: Story = {
+export const Primary: Story = {
   args: {
-    children: 'Click me',
+    label: 'Primary Button',
+    variant: 'primary',
+  },
+};
+
+export const Secondary: Story = {
+  args: {
+    label: 'Secondary Button',
+    variant: 'secondary',
   },
 };
 
 export const Disabled: Story = {
   args: {
-    children: 'Disabled',
+    label: 'Disabled Button',
     disabled: true,
   },
 };

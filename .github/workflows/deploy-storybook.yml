@@ -1,25 +1,25 @@
-name: Deploy Storybook to GitHub Pages
+name: 🚀 Deploy Storybook to GitHub Pages
 
 on:
   push:
     branches:
-      - main # ✅ 如你默认分支不是 main，请替换成正确分支名
+      - main
 
 permissions:
-  contents: write
+  contents: write # 用于将构建产物写入 gh-pages 分支
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout repo
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
+      - name: 🧰 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: 📦 Install dependencies
         run: npm ci
@@ -28,9 +28,8 @@ jobs:
         run: npm run build-storybook
 
       - name: 🚀 Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
-          publish_branch: gh-pages
-          cname: storybook.191413.ai
+          branch: gh-pages
+          folder: storybook-static
+          clean: true
