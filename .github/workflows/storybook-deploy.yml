@@ -1,48 +1,45 @@
-name: 📦 Deploy Storybook to GitHub Pages
+name: Deploy Storybook to GitHub Pages
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
+    paths:
+      - ".storybook/**"
+      - "src/components/**"
+      - "src/stories/**"
+      - "package.json"
+      - "yarn.lock"
+      - "tsconfig.json"
+      - ".github/workflows/storybook-deploy.yml"
 
 jobs:
   deploy:
+    name: Build and Deploy Storybook
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout repository
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: 🔧 Setup Node.js
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: yarn
 
-      - name: 📦 Install dependencies (with cache)
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: deps-${{ hashFiles('package-lock.json') }}
+      - name: 📥 Install dependencies
+        run: yarn install --frozen-lockfile
 
-      - run: npm ci
-
-      - name: 🛠️ Build Storybook
-        run: npm run build-storybook
+      - name: 🛠 Build Storybook
+        run: |
+          yarn build-storybook
+          echo 'storybook.191413.ai' > storybook-static/CNAME
+          touch storybook-static/.nojekyll
 
       - name: 🚀 Deploy to GitHub Pages
-        run: |
-          cd storybook-static
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
-          git checkout -b gh-pages
-          touch .nojekyll
-          echo "storybook.191413.ai" > CNAME
-          git add .
-          git commit -m "🚀 Storybook 自动部署：$(date '+%Y-%m-%d %H:%M:%S')"
-          git push origin gh-pages --force
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+          keep_files: true
