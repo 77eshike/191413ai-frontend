@@ -1,0 +1,19 @@
+{
+  "/api/login/route": "app/api/login/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/logout/route": "app/api/logout/route.js",
+  "/api/me/route": "app/api/me/route.js",
+  "/api/profile/route": "app/api/profile/route.js",
+  "/api/projects/[id]/route": "app/api/projects/[id]/route.js",
+  "/api/projects/create/route": "app/api/projects/create/route.js",
+  "/api/projects/delete/route": "app/api/projects/delete/route.js",
+  "/api/projects/edit/route": "app/api/projects/edit/route.js",
+  "/api/projects/list/route": "app/api/projects/list/route.js",
+  "/api/projects/update/route": "app/api/projects/update/route.js",
+  "/api/refresh-token/route": "app/api/refresh-token/route.js",
+  "/dashboard/[id]/edit/page": "app/dashboard/[id]/edit/page.js",
+  "/dashboard/[id]/page": "app/dashboard/[id]/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/create/page": "app/dashboard/create/page.js",
+  "/page": "app/page.js"
+}

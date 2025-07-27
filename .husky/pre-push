@@ -1,5 +1,5 @@
+# ✅ .husky/pre-push（v10+ 兼容）
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-echo "🔍 正在执行 eslint 检查..."
 npm run lint

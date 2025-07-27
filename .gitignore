@@ -1,26 +1,15 @@
-# Node 模块
-node_modules/
+# Ignore Storybook build output
+storybook-static/
 
-# 构建产物
-dist/
-.next/
-out/
-build/
 
-# 本地环境
-.env*
-.vscode/
-.idea/
-.DS_Store
-
-# 日志与临时文件
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-coverage/
-
-# 操作系统或编辑器临时文件
-*.swp
-*.swo
-*.tmp
+# ? 五、注意事项
+# 1. 確保已执行
+#    git rm -r --cached storybook-static
+#    git add .gitignore
+#
+# 2. 请确保已执行:
+#    npx husky install
+#    并确保 .husky/文件有执行权:
+#    chmod +x .husky/*
+#
+# 3. 合并后 CI 自动构建 Storybook 并部署到 gh-pages 
