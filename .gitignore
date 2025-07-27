@@ -1,6 +1,7 @@
 # Ignore Storybook build output
-node_modules
-.next
+node_modules/
+.next/
+storybook-static/
 out
 *.log
 *.tsbuildinfo
@@ -16,9 +17,4 @@ out
 #    并确保 .husky/文件有执行权:
 #    chmod +x .husky/*
 #
-# 3. 合并后 CI 自动构建 Storybook 并部署到 gh-pages node_modules/
-node_modules/
-node_modules/
-*.node
-node_modules/
-*.node
+# 3. 合并后 CI 自动构建 Storybook 并部署到 gh-pages 
