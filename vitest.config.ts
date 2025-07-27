@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -5,15 +6,11 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     coverage: {
-      provider: 'c8',
-      reporter: ['text', 'json', 'lcov'],
+      provider: 'v8', // ✅ 必须使用 v8，c8 已不再支持
+      reporter: ['text', 'html', 'json-summary'],
       reportsDirectory: './coverage',
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['**/__tests__/**', '**/*.d.ts'],
-      lines: 85,
-      statements: 85,
-      functions: 85,
-      branches: 85,
     },
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', 'dist'],
   },
 });

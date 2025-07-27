@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: 191413ai-frontend
+    environment:
+      - NODE_ENV=production
+    restart: always
+    expose:
+      - "3000"
+    networks:
+      - nginx-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.191413ai.rule=Host(`191413.ai`)"
+      - "traefik.http.routers.191413ai.entrypoints=websecure"
+      - "traefik.http.routers.191413ai.tls.certresolver=myresolver"
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - nginx_certs:/etc/nginx/certs
+      - nginx_vhost:/etc/nginx/vhost.d
+      - nginx_html:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+    networks:
+      - nginx-proxy
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-acme
+    environment:
+      - DEFAULT_EMAIL=77eshike@gmail.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nginx_certs:/etc/nginx/certs
+      - nginx_vhost:/etc/nginx/vhost.d
+      - nginx_html:/usr/share/nginx/html
+    restart: always
+    networks:
+      - nginx-proxy
+
+networks:
+  nginx-proxy:
+    external: false
+
+volumes:
+  nginx_certs:
+  nginx_vhost:
+  nginx_html:

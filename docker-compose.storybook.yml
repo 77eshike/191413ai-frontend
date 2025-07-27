@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  storybook:
+    image: storybook-191413ai
+    container_name: storybook
+    build:
+      context: .
+      dockerfile: Dockerfile.storybook
+    environment:
+      - VIRTUAL_HOST=storybook.191413.ai
+      - LETSENCRYPT_HOST=storybook.191413.ai
+      - LETSENCRYPT_EMAIL=77eshike@gmail.com
+    expose:
+      - "80"
+    networks:
+      - nginx-proxy
+
+networks:
+  nginx-proxy:
+    external: true

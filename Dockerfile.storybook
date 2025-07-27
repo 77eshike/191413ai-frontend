@@ -1,0 +1,5 @@
+# Dockerfile.storybook
+FROM nginx:stable-alpine
+
+COPY ./storybook-static /usr/share/nginx/html
+COPY ./nginx/storybook.conf /etc/nginx/conf.d/default.conf

@@ -1,7 +1,3 @@
-# 191413ai-frontend
+## 🧪 Storybook CI 状态
 
-191413AI 前端项目，基于 Vite + Vitest + ESLint 构建
-
-## 📦 当前项目状态
-
-- ✅ 使用 **ESLint v9**（Flat Config 模式） - ✅ 自动执行 `lint`：支持 CI 工作流 - ✅ `Node.js v20.x` 环境兼容
+[![Deploy Storybook](https://github.com/77eshike/191413ai-frontend/actions/workflows/storybook-deploy.yml/badge.svg)](https://github.com/77eshike/191413ai-frontend/actions/workflows/storybook-deploy.yml)

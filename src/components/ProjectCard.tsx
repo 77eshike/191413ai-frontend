@@ -1,35 +1,32 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { formatDistanceToNow } from 'date-fns';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar } from '@/components/ui/avatar';
 
-export interface ProjectCardProps {
-  title: string;
+interface ProjectCardProps {
+  name: string;
   description: string;
-  status: 'active' | 'archived' | 'draft';
-  updatedAt: string; // ISO 格式时间字符串
+  owner: string;
+  avatarUrl?: string;
 }
 
-export default function ProjectCard({ title, description, status, updatedAt }: ProjectCardProps) {
-  const statusColor = {
-    active: 'bg-green-100 text-green-700',
-    archived: 'bg-gray-100 text-gray-600',
-    draft: 'bg-yellow-100 text-yellow-700',
-  };
-
+export const ProjectCard = ({ name, description, owner, avatarUrl }: ProjectCardProps) => {
   return (
-    <Card className="w-full max-w-md shadow-md hover:shadow-lg transition-shadow duration-300">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-        <Badge className={statusColor[status]}>{status}</Badge>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
-        <p className="text-xs text-gray-500">
-          更新于 {formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}
-        </p>
+    <Card className="p-4 w-full max-w-md rounded-2xl shadow-md">
+      <CardContent className="flex items-center gap-4">
+        <Avatar>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={`${owner} avatar`} className="rounded-full" />
+          ) : (
+            <span className="text-xl">{owner.slice(0, 1)}</span>
+          )}
+        </Avatar>
+        <div>
+          <h3 className="text-lg font-semibold">{name}</h3>
+          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className="text-xs mt-1 text-gray-500">由 {owner} 创建</p>
+        </div>
       </CardContent>
     </Card>
   );
-}
+};

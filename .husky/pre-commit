@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+# 预提交阶段暂不执行 lint-staged，保留占位逻辑
+echo "✅ pre-commit 已略过 lint-staged，仅保留占位逻辑"

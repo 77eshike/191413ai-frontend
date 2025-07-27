@@ -1,32 +1,13 @@
-'use client';
+import React from 'react';
 
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost';
-  children: ReactNode;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  label: string;
 }
-// 测试 CI 自动执行
 
-export default function Button({
-  variant = 'primary',
-  className,
-  children,
-  ...props
-}: ButtonProps) {
+export const Button = ({ label, ...props }: ButtonProps) => {
   return (
-    <button
-      className={cn(
-        'rounded-xl px-4 py-2 font-medium transition-all',
-        variant === 'primary' && 'bg-black text-white hover:bg-neutral-800',
-        variant === 'secondary' && 'border border-gray-300 text-black hover:bg-gray-100',
-        variant === 'ghost' && 'text-gray-600 hover:text-black',
-        className
-      )}
-      {...props}
-    >
-      {children}
+    <button {...props} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+      {label}
     </button>
   );
-}
+};

@@ -2,8 +2,7 @@ node_modules
 .next
 dist
 build
+out
 coverage
 *.log
-*.lock
-out
-public
+public/
