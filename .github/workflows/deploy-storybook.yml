@@ -1,4 +1,4 @@
-name: 🚀 Deploy Storybook to GitHub Pages
+name: Deploy Storybook to GitHub Pages
 
 on:
   push:
@@ -6,45 +6,31 @@ on:
       - main
       - preview
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: deploy-storybook
-  cancel-in-progress: true
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: ⬇️ Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🏗️ Build Storybook
+      - name: Build Storybook
         run: npm run build-storybook
 
-      - name: 🛠️ Set deploy path based on branch
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/preview" ]]; then
-            echo "DEPLOY_DIR=preview" >> $GITHUB_ENV
-          else
-            echo "DEPLOY_DIR=." >> $GITHUB_ENV
-          fi
-
-      - name: 📤 Upload to GitHub Pages
+      - name: Upload to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_PAGES_TOKEN }}
           publish_dir: ./storybook-static
-          destination_dir: ${{ env.DEPLOY_DIR }}
           publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: '🚀 Deploy Storybook from ${{ github.ref_name }} [skip ci]'
+          full_commit_message: true
