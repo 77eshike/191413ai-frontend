@@ -4,19 +4,25 @@ on:
   push:
     branches:
       - main
+      - preview
 
 permissions:
-  contents: write # 用于将构建产物写入 gh-pages 分支
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-storybook
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: ⬇️ Checkout code
+      - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧰 Setup Node
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -24,12 +30,21 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      - name: 🛠 Build Storybook
+      - name: 🏗️ Build Storybook
         run: npm run build-storybook
 
-      - name: 🚀 Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: 🛠️ Set deploy path based on branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/preview" ]]; then
+            echo "DEPLOY_DIR=preview" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_DIR=." >> $GITHUB_ENV
+          fi
+
+      - name: 📤 Upload to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          branch: gh-pages
-          folder: storybook-static
-          clean: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+          destination_dir: ${{ env.DEPLOY_DIR }}
+          publish_branch: gh-pages
