@@ -1,10 +1,14 @@
-# .github/workflows/storybook-docker.yml
-
 name: Build & Deploy Storybook (Docker)
 
 on:
   push:
     branches: [main]
+    paths:
+      - '.storybook/**'
+      - 'src/components/**'
+      - 'package.json'
+      - 'Dockerfile.storybook'
+      - 'docker-compose.override.yml'
   workflow_dispatch:
 
 jobs:
@@ -23,10 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Storybook static site
+      - name: Build Storybook static files
         run: npm run build-storybook
 
-      - name: Copy files to remote server & deploy
+      - name: Copy files to remote server & trigger docker build
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -35,7 +39,5 @@ jobs:
           script: |
             cd /root/191413ai-frontend
             git pull origin main
-            npm ci
-            npm run build-storybook
-            docker compose -f docker-compose.override.yml build storybook
-            docker compose up -d storybook
+            docker compose -f docker-compose.override.yml down
+            docker compose -f docker-compose.override.yml up -d --build storybook
