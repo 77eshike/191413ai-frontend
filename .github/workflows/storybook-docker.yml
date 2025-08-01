@@ -5,10 +5,7 @@ name: Build & Deploy Storybook (Docker)
 on:
   push:
     branches: [main]
-    paths:
-      - '.storybook/**'
-      - 'src/components/**'
-      - 'package.json'
+  workflow_dispatch:
 
 jobs:
   deploy-storybook:
