@@ -1,15 +1,13 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-# --- 轻量检查（不阻塞 push）---
+[ "${HUSKY:-1}" = "0" ] && exit 0
+
 echo "pre-push: quick checks (non-blocking)"
-
-# 如果真的需要，你也可以在这里做非常快的校验，比如 ts 类型检查：
-# CHANGED_TS="$(git diff --name-only --diff-filter=ACMRT @{push}...HEAD | grep -E '\.tsx?$' || true)"
-# if [ -n "$CHANGED_TS" ]; then
-#   echo "Typecheck on changed TS files..."
-#   npm run -s typecheck || echo "typecheck failed (ignored)"
-# fi
-
+# 严格模式才阻塞
+if [ "${HUSKY_STRICT:-0}" = "1" ]; then
+  npx --no -- eslint -c eslint.config.js --max-warnings=0
+  npx --no -- prettier -c .
+fi
 echo "pre-push finished (non-blocking)."
 exit 0

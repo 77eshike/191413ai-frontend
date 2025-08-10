@@ -1,11 +1,12 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-set -e
+# 允许通过 HUSKY=0 跳过
+[ "${HUSKY:-1}" = "0" ] && exit 0
 
-# 仅当有暂存文件时才跑 lint-staged（避免 "No staged files" 报错）
-if git diff --cached --name-only --diff-filter=ACMRT | grep -q .; then
-  npx lint-staged
+if git diff --cached --name-only --diff-filter=ACMR | grep -q .; then
+  echo "🔍 lint-staged running..."
+  npx --no -- lint-staged || exit 1
 else
-  echo "No staged files. Skipping lint-staged."
+  echo "→ No staged files found."
 fi
