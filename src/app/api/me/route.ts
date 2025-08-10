@@ -1,30 +1,26 @@
-import { NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/jwt';
-import { getUserById } from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server'
+import { getUserFromRequest } from '@/lib/auth'
+import { getUserById } from '@/lib/db'
 
-// GET /api/me
-export async function GET() {
-  try {
-    const authUser = await getUserFromToken();
-    if (!authUser) {
-      return NextResponse.json({ message: '未登录或Token失效' }, { status: 401 });
-    }
+export async function GET(req: NextRequest) {
+  const user = (await getUserFromRequest()) as { userId: number }
 
-    const user = await getUserById(authUser.userId);
-    if (!user) {
-      return NextResponse.json({ message: '用户不存在' }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      id: user.id,
-      username: user.username,
-      nickname: user.nickname,
-      avatar: user.avatar,
-      email: user.email,
-      role: user.role,
-    });
-  } catch (error) {
-    console.error('获取当前用户信息失败:', error);
-    return NextResponse.json({ message: '服务器错误' }, { status: 500 });
+  if (!user) {
+    return NextResponse.json({ message: '未登录' }, { status: 401 })
   }
+
+  const dbUser = await getUserById(user.userId)
+
+  if (!dbUser) {
+    return NextResponse.json({ message: '用户未找到' }, { status: 404 })
+  }
+
+  return NextResponse.json({
+    id: dbUser.id,
+    username: dbUser.username,
+    email: dbUser.email,
+    nickname: dbUser.nickname,
+    avatar: dbUser.avatar,
+    role: dbUser.role,
+  })
 }

@@ -7,34 +7,43 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20'
 
       - name: Install Dependencies
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install --frozen-lockfile
 
       - name: Build Storybook
-        run: yarn build-storybook
+        run: |
+          set -e  # 构建失败立即退出
+          echo "🛠️ 开始构建 Storybook..."
+          yarn build-storybook
+          echo "✅ 构建完成"
 
-      - name: Add Server to known_hosts
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H 43.228.124.126 >> ~/.ssh/known_hosts
+          echo "${{ secrets.STORYBOOK_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.STORYBOOK_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Setup SSH Key
+      - name: Deploy via rsync
         run: |
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "🚀 开始部署 Storybook 到远程服务器..."
+          rsync -avzr --delete ./storybook-static/ ${{ secrets.STORYBOOK_USER }}@${{ secrets.STORYBOOK_HOST }}:${{ secrets.STORYBOOK_TARGET_DIR }}
+          echo "✅ 部署完成"
 
-      - name: Deploy to Server
+      - name: Verify Upload (Optional)
         run: |
-          scp -r storybook-static/* ${{ secrets.SERVER_ADDRESS }}:/srv/www/storybook.191413.ai/
+          echo "🧪 请在浏览器访问: https://${{ secrets.STORYBOOK_HOST }} 或 storybook.191413.ai"

@@ -1,0 +1,36 @@
+services:
+  frontend:
+    container_name: frontend-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/app
+    restart: always
+
+  storybook:
+    container_name: storybook
+    build:
+      context: .
+      dockerfile: Dockerfile.storybook
+    command: npm run build-storybook
+    volumes:
+      - .:/app
+    depends_on:
+      - frontend
+
+  storybook-public:
+    container_name: storybook-public
+    image: nginx:1.25
+    ports:
+      - '6006:80'
+    volumes:
+      - ./storybook-static:/usr/share/nginx/html:ro
+      - ./storybook.conf:/etc/nginx/conf.d/storybook.191413.ai.conf:ro
+    depends_on:
+      - storybook
+    restart: always

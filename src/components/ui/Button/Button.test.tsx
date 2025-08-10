@@ -1,26 +1,20 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Button from './Button'; // ?? 使用 default 导入
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { Button } from './Button'
 
-describe('Button Component', () => {
-  it('renders with text content', () => {
-    render(<Button>Click me</Button>);
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
+describe('Button', () => {
+  it('renders with children', () => {
+    render(<Button>Click Me</Button>)
+    expect(screen.getByText('Click Me')).toBeInTheDocument()
+  })
 
-  it('handles click events', () => {
-    const onClick = vi.fn();
-    render(<Button onClick={onClick}>Click</Button>);
-    fireEvent.click(screen.getByText('Click'));
-    expect(onClick).toHaveBeenCalled();
-  });
+  it('displays loading state', () => {
+    render(<Button loading>Submit</Button>)
+    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+  })
 
-  it('applies custom className', () => {
-    render(<Button className="custom-class">Test</Button>);
-    expect(screen.getByText('Test')).toHaveClass('custom-class');
-  });
-
-  it('supports disabled state', () => {
-    render(<Button disabled>Disabled</Button>);
-    expect(screen.getByText('Disabled')).toBeDisabled();
-  });
-});
+  it('applies variant styles', () => {
+    const { container } = render(<Button variant="danger">Delete</Button>)
+    expect(container.firstChild).toHaveClass('bg-red-600')
+  })
+})

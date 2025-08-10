@@ -1,42 +1,82 @@
-'use client';
+// src/app/dashboard/[id]/edit/page.tsx
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import type { Project } from '@/types';
+import React, { useEffect, useState } from 'react'
+import { useRouter, useParams } from 'next/navigation'
+import { useProjectList, useUpdateProject } from '@/hooks/useProjectAPI'
 
-export default function ProjectDetailPage() {
-  const { id } = useParams();
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function EditProjectPage() {
+  const router = useRouter()
+  const { id } = useParams<{ id: string }>()
+  const { projects, isLoading } = useProjectList()
+  const { update } = useUpdateProject()
 
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [error, setError] = useState('')
+
+  // 找到当前编辑的项目
   useEffect(() => {
-    async function fetchProject() {
-      try {
-        const response = await fetch(`/api/projects/${id}`);
-        const data = await response.json();
-        setProject(data);
-      } catch (error) {
-        console.error('加载项目详情失败:', error);
-      } finally {
-        setLoading(false);
+    if (!isLoading && projects.length > 0) {
+      const project = projects.find(p => p.id === Number(id))
+      if (project) {
+        setName(project.name)
+        setDescription(project.description)
+      } else {
+        setError('项目未找到')
       }
     }
+  }, [id, projects, isLoading])
 
-    if (id) {
-      fetchProject();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!name.trim()) {
+      setError('项目名称不能为空')
+      return
     }
-  }, [id]);
 
-  if (loading) return <div className="p-6">加载中...</div>;
-
-  if (!project) {
-    return <div className="p-6">项目不存在</div>;
+    try {
+      await update(Number(id), name, description)
+      router.push('/dashboard')
+    } catch (err) {
+      setError((err as Error).message)
+    }
   }
 
+  if (isLoading) return <p>加载中...</p>
+  if (error) return <p className="text-red-500">{error}</p>
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">{project.name}</h1>
-      <p>{project.description}</p>
+    <div className="max-w-xl mx-auto p-6">
+      <h1 className="text-2xl font-semibold mb-4">编辑项目</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-1">项目名称</label>
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block mb-1">项目描述</label>
+          <textarea
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+        {error && <p className="text-red-500">{error}</p>}
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
+          保存修改
+        </button>
+      </form>
     </div>
-  );
+  )
 }

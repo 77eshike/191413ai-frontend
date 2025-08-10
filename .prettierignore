@@ -1,8 +1,5 @@
 node_modules
 .next
 dist
-build
-out
 coverage
-*.log
-public/
+storybook-static

@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    image: nginxproxy/nginx-proxy:alpine
     container_name: nginx-proxy
     restart: always
     ports:
@@ -10,31 +8,64 @@ services:
       - '443:443'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./data/certs:/etc/nginx/certs:ro
-      - ./data/vhost.d:/etc/nginx/vhost.d
-      - ./data/html:/usr/share/nginx/html
-    networks:
-      - nginx-proxy
+      - ./certs:/etc/nginx/certs
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
     labels:
-      - com.github.nginx-proxy.nginx=true
+      com.github.nginx-proxy.nginx: 'true'
 
-  nginx-letsencrypt:
+  nginx-proxy-acme:
     image: nginxproxy/acme-companion
-    container_name: nginx-letsencrypt
+    container_name: nginx-proxy-acme
     restart: always
     depends_on:
       - nginx-proxy
     environment:
-      - NGINX_PROXY_CONTAINER=nginx-proxy
-      - DEFAULT_EMAIL=77eshike@gmail.com
+      NGINX_PROXY_CONTAINER: nginx-proxy
+      DEFAULT_EMAIL: 77eshike@gmail.com
+    volumes_from:
+      - nginx-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./data/certs:/etc/nginx/certs
-      - ./data/vhost.d:/etc/nginx/vhost.d
-      - ./data/html:/usr/share/nginx/html
-    networks:
-      - nginx-proxy
+      - ./acme:/etc/acme.sh
 
-networks:
-  nginx-proxy:
-    external: true
+  frontend:
+    image: 191413ai-frontend-frontend-app
+    container_name: frontend
+    restart: always
+    expose:
+      - '3000'
+    env_file:
+      - .env.production
+    environment:
+      VIRTUAL_HOST: 191413.ai
+      LETSENCRYPT_HOST: 191413.ai
+      LETSENCRYPT_EMAIL: 77eshike@gmail.com
+    labels:
+      com.github.nginx-proxy.acme.challenge-location: /.well-known/acme-challenge
+
+  storybook:
+    image: 191413ai-frontend-storybook-preview
+    container_name: storybook
+    restart: always
+    expose:
+      - '6006'
+    environment:
+      VIRTUAL_HOST: storybook.191413.ai
+      LETSENCRYPT_HOST: storybook.191413.ai
+      LETSENCRYPT_EMAIL: 77eshike@gmail.com
+    labels:
+      com.github.nginx-proxy.acme.challenge-location: /.well-known/acme-challenge
+
+  preview:
+    image: 191413ai-frontend-storybook-preview
+    container_name: preview
+    restart: always
+    expose:
+      - '7000'
+    environment:
+      VIRTUAL_HOST: preview.191413.ai
+      LETSENCRYPT_HOST: preview.191413.ai
+      LETSENCRYPT_EMAIL: 77eshike@gmail.com
+    labels:
+      com.github.nginx-proxy.acme.challenge-location: /.well-known/acme-challenge

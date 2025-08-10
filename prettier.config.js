@@ -1,10 +1,10 @@
-// prettier.config.js
+// prettier.config.js (for ESM projects)
 export default {
   semi: false,
   singleQuote: true,
-  printWidth: 100,
-  trailingComma: 'none',
+  trailingComma: 'all',
   arrowParens: 'avoid',
+  printWidth: 100,
   tabWidth: 2,
   endOfLine: 'lf',
-};
+}

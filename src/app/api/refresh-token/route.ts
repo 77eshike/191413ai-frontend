@@ -1,39 +1,30 @@
 // src/app/api/refresh-token/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyRefreshToken, generateAccessToken } from '@/lib/jwt';
+import { NextResponse } from 'next/server'
+import { verifyRefreshToken, generateAccessToken } from '@/lib/auth'
 
-export async function POST(req: NextRequest) {
-  const cookie = req.headers.get('cookie');
-  if (!cookie) {
-    return NextResponse.json({ message: '未登录或无刷新令牌' }, { status: 401 });
-  }
+import { getRefreshTokenFromRequest } from '@/lib/auth'
 
-  const refreshToken = cookie
-    .split(';')
-    .map(c => c.trim())
-    .find(c => c.startsWith('refreshToken='))
-    ?.split('=')[1];
+export async function POST() {
+  const refreshToken = await getRefreshTokenFromRequest() // ✅ 加上 await
 
   if (!refreshToken) {
-    return NextResponse.json({ message: '刷新令牌不存在' }, { status: 401 });
+    return NextResponse.json({ message: '未提供 refreshToken' }, { status: 401 })
   }
 
-  const payload = verifyRefreshToken(refreshToken);
+  try {
+    const payload = await verifyRefreshToken(refreshToken)
+    const accessToken = await generateAccessToken(payload)
 
-  if (!payload) {
-    return NextResponse.json({ message: '刷新令牌无效或已过期' }, { status: 403 });
+    const response = NextResponse.json({ message: 'access token refreshed' })
+    response.cookies.set('accessToken', accessToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      path: '/',
+    })
+
+    return response
+  } catch (error) {
+    console.error('刷新 token 失败:', error)
+    return NextResponse.json({ message: '无效或过期的 refreshToken' }, { status: 401 })
   }
-
-  const newAccessToken = generateAccessToken(payload);
-
-  const response = NextResponse.json({ message: '令牌已刷新' });
-  response.cookies.set('token', newAccessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 15, // 15 分钟
-  });
-
-  return response;
 }

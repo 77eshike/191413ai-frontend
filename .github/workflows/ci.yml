@@ -1,73 +1,67 @@
-name: CI Pipeline
+name: CI
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   lint:
-    name: ✨ Lint Code
+    name: 🧹 Lint Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: ♻️ Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-
-      - name: 📦 Install Dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: ✨ Run ESLint
+      - name: Run ESLint
         run: npm run lint
 
   test:
-    name: 🔧 Run Tests
+    name: 🧪 Run Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: ♻️ Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-
-      - name: 📦 Install Dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: ✅ Run Tests
+      - name: Run tests
         run: npm run test
 
-  deploy-storybook:
-    name: 🚀 Deploy Storybook to GitHub Pages
-    if: github.ref == 'refs/heads/main'
-    needs: [lint, test]
+  coverage:
+    name: 📊 Upload Coverage Report
     runs-on: ubuntu-latest
+    needs: test
     steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: ♻️ Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: 🛠️ Build Storybook
-        run: npm run build-storybook
-
-      - name: 🚀 Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Run Tests with Coverage
+        run: npm run test:coverage
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
-          publish_branch: gh-pages
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/clover.xml
+          fail_ci_if_error: true
+
+  storybook:
+    name: 🧪 Build Storybook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Storybook
+        run: npm run build-storybook

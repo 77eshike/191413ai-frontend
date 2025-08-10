@@ -1,35 +1,24 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/jwt';
+// src/app/api/projects/update/route.ts
+import { NextResponse } from 'next/server'
+import { getUserFromRequest } from '@/lib/auth'
+import { pool } from '@/lib/db'
 
-// POST /api/projects/update
-export async function POST(req: NextRequest) {
-  const authUser = await getUserFromToken();
+export async function PATCH(req: Request) {
+  const user = await getUserFromRequest()
+  if (!user) return NextResponse.json({ message: '未登录' }, { status: 401 })
 
-  if (!authUser) {
-    return NextResponse.json({ message: '未登录或Token失效' }, { status: 401 });
-  }
+  const { id, name, description } = await req.json()
+  if (!id) return NextResponse.json({ message: '缺少项目 ID' }, { status: 400 })
 
   try {
-    const body = await req.json();
+    await pool.query(
+      'UPDATE projects SET name = ?, description = ?, updated_at = NOW() WHERE id = ? AND owner_id = ?',
+      [name, description, id, user.userId],
+    )
 
-    const { id, name, description } = body;
-
-    if (!id || !name || !description) {
-      return NextResponse.json({ message: '参数不完整' }, { status: 400 });
-    }
-
-    // === 模拟更新逻辑 ===
-    const updated = {
-      id,
-      name,
-      description,
-      owner: authUser.username,
-    };
-
-    return NextResponse.json({ message: '项目更新成功', data: updated });
+    return NextResponse.json({ id, name, description })
   } catch (error) {
-    console.error('更新项目失败:', error);
-    return NextResponse.json({ message: '服务器异常' }, { status: 500 });
+    console.error('更新项目失败:', error)
+    return NextResponse.json({ message: '项目更新失败' }, { status: 500 })
   }
 }

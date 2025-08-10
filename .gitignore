@@ -1,20 +1,41 @@
-# Ignore Storybook build output
+# ===== Build / Caches =====
 node_modules/
 .next/
+.next.cache/
 storybook-static/
-out
-*.log
+out/
+dist/
+.temp/
+tmp/
 *.tsbuildinfo
+.eslintcache
+.vercel/
 
+# ===== Logs / Reports =====
+*.log
+eslint-errors.log
+eslint-report.json
+coverage/
 
-# ? 五、注意事项
-# 1. 確保已执行
-#    git rm -r --cached storybook-static
-#    git add .gitignore
-#
-# 2. 请确保已执行:
-#    npx husky install
-#    并确保 .husky/文件有执行权:
-#    chmod +x .husky/*
-#
-# 3. 合并后 CI 自动构建 Storybook 并部署到 gh-pages 
+# ===== OS/IDE =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ===== Env & Secrets (按需放开某些环境文件) =====
+.env*
+!/.env.example
+# 如果你确实要把 .env.production 放仓库，就把上一行的 .env* 换成 .env.local
+
+# ===== Keys / Certs （强烈建议不入库）=====
+*.pem
+*.key
+certs/
+acme/
+storybook_deploy_key
+storybook_deploy_key.pub
+dhparam.pem
+acme/
+certs/
+data/certs/

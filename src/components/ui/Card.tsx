@@ -1,10 +1,10 @@
 // src/components/ui/Card.tsx
-import React from 'react';
+import React from 'react'
 
 export interface CardProps {
-  title: string;
-  description: string;
-  footer?: React.ReactNode;
+  title: string
+  description: string
+  footer?: React.ReactNode
 }
 
 export const Card: React.FC<CardProps> = ({ title, description, footer }) => {
@@ -14,7 +14,7 @@ export const Card: React.FC<CardProps> = ({ title, description, footer }) => {
       <p className="text-gray-600 mb-4">{description}</p>
       {footer && <div className="pt-2 border-t mt-2">{footer}</div>}
     </div>
-  );
-};
+  )
+}
 
-export default Card;
+export default Card

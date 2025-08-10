@@ -1,31 +1,20 @@
-import { NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/jwt';
+// src/app/api/projects/list/route.ts
+import { NextResponse } from 'next/server'
+import { getUserFromRequest } from '@/lib/auth'
+import { pool } from '@/lib/db'
 
-// GET /api/projects/list
 export async function GET() {
-  const authUser = await getUserFromToken();
+  const user = await getUserFromRequest()
+  if (!user) return NextResponse.json({ message: '未登录' }, { status: 401 })
 
-  if (!authUser) {
-    return NextResponse.json({ message: '未登录或Token失效' }, { status: 401 });
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, name, description, created_at AS createdAt, updated_at AS updatedAt FROM projects WHERE owner_id = ? ORDER BY created_at DESC',
+      [user.userId],
+    )
+    return NextResponse.json(rows)
+  } catch (error) {
+    console.error('获取项目列表失败:', error)
+    return NextResponse.json({ message: '获取项目失败' }, { status: 500 })
   }
-
-  // 模拟项目列表数据（后续可替换为数据库查询）
-  const mockProjects = [
-    {
-      id: 1,
-      name: '191413AI 控制台',
-      description: '前端平台与项目管理中心',
-      status: 'active',
-      createdAt: '2025-07-15T10:00:00.000Z',
-    },
-    {
-      id: 2,
-      name: 'AI 模型实验室',
-      description: '支持模型训练与测试',
-      status: 'pending',
-      createdAt: '2025-07-20T14:30:00.000Z',
-    },
-  ];
-
-  return NextResponse.json({ projects: mockProjects }, { status: 200 });
 }

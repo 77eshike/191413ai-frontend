@@ -1,41 +1,29 @@
-'use client';
+//ProjectCard.tsx
 
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+'use client'
 
-export interface Project {
-  id: number;
-  name: string;
-  status?: string;
-  description?: string;
-  createdAt?: string;
-}
+import Card from '@/components/ui/Card/Card'
+import CardContent from '@/components/ui/Card/CardContent'
+import { Avatar } from '@/components/ui/Avatar'
 
 interface ProjectCardProps {
-  project: Project;
+  name: string
+  description: string
+  owner: string
+  avatarUrl?: string
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+export const ProjectCard = ({ name, description, owner, avatarUrl }: ProjectCardProps) => {
   return (
-    <Card className="w-full shadow-md transition-all hover:shadow-lg">
-      <CardContent className="space-y-3 p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">{project.name}</h3>
-          <Badge variant="outline">{project.status || '进行中'}</Badge>
+    <Card className="p-4 w-full max-w-md rounded-2xl shadow-md">
+      <CardContent className="flex items-center gap-4">
+        <Avatar src={avatarUrl} alt={`${owner} avatar`} fallback={owner.slice(0, 1)} size="md" />
+        <div>
+          <h3 className="text-lg font-semibold">{name}</h3>
+          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className="text-xs mt-1 text-gray-500">由 {owner} 创建</p>
         </div>
-        {project.description && (
-          <p className="text-sm text-muted-foreground">{project.description}</p>
-        )}
-        {project.createdAt && (
-          <p className="text-xs text-muted-foreground">
-            创建时间：{format(new Date(project.createdAt), 'yyyy-MM-dd HH:mm')}
-          </p>
-        )}
       </CardContent>
     </Card>
-  );
-};
-
-export default ProjectCard;
+  )
+}

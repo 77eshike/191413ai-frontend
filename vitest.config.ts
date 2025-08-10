@@ -1,14 +1,17 @@
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
+  base: './', // ✅ 解决 "Failed to fetch dynamically imported module" 问题
   plugins: [react()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './vitest.setup.ts',
-    coverage: {
-      reporter: ['text', 'json', 'html'],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
     },
   },
-});
+  server: {
+    host: '0.0.0.0', // ✅ 支持远程 IP/域名访问
+    port: 6006,
+  },
+})

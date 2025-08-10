@@ -1,44 +1,49 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import type { Project } from '@/types';
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import type { Project } from '@/types'
+import { getProjectById } from '@/lib/db/projects'
+import { Spinner } from '@/components/ui/Spinner'
 
 export default function ProjectDetailPage() {
-  const params = useParams();
-  const projectId = params?.id as string;
-
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { id } = useParams<{ id: string }>()
+  const [project, setProject] = useState<Project | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchProject() {
+    const fetchProject = async () => {
+      if (!id) return
       try {
-        const response = await fetch(`/api/projects/${projectId}`);
-        const data = await response.json();
-        setProject(data);
+        const data = await getProjectById(id)
+        setProject(data)
       } catch (error) {
-        console.error('加载项目失败:', error);
+        console.error('加载项目失败:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    if (projectId) {
-      fetchProject();
-    }
-  }, [projectId]);
+    void fetchProject()
+  }, [id])
 
-  if (loading) return <div className="p-6">加载中...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Spinner />
+      </div>
+    )
+  }
 
   if (!project) {
-    return <div className="p-6">未找到项目</div>;
+    return <div className="text-center text-gray-500">未找到对应项目</div>
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">{project.name}</h1>
-      <p className="text-gray-600">{project.description}</p>
+    <div className="p-6 space-y-4">
+      <h1 className="text-2xl font-bold">{project.name}</h1>
+      <p className="text-gray-700">{project.description}</p>
+      <div className="text-sm text-gray-400">项目ID: {project.id}</div>
     </div>
-  );
+  )
 }

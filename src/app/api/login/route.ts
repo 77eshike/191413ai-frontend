@@ -1,54 +1,78 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { findUserByUsername } from '@/lib/db';
-import { generateAccessToken, generateRefreshToken } from '@/lib/jwt';
-import { serialize } from 'cookie';
+// src/app/api/login/route.ts
+import { NextRequest, NextResponse } from 'next/server'
+import bcrypt from 'bcryptjs'
+import { generateAccessToken, generateRefreshToken } from '@/lib/auth'
+import { pool } from '@/lib/db'
+import { serialize } from 'cookie'
+import type { RowDataPacket } from 'mysql2'
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { username, password } = body;
+    const { username, password } = await req.json()
 
     if (!username || !password) {
-      return NextResponse.json({ message: '用户名或密码不能为空' }, { status: 400 });
+      return NextResponse.json({ message: '用户名和密码不能为空' }, { status: 400 })
     }
 
-    const user = await findUserByUsername(username);
+    const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM users WHERE username = ?', [
+      username,
+    ])
+
+    const user = rows[0]
     if (!user) {
-      return NextResponse.json({ message: '用户不存在' }, { status: 401 });
+      return NextResponse.json({ message: '用户不存在' }, { status: 404 })
     }
 
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      return NextResponse.json({ message: '密码错误' }, { status: 401 });
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (!isPasswordValid) {
+      return NextResponse.json({ message: '密码错误' }, { status: 401 })
     }
 
-    const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const accessToken = await generateAccessToken({
+      userId: user.id,
+      username: user.username,
+      role: user.role,
+    })
 
-    const accessCookie = serialize('access_token', accessToken, {
+    const refreshToken = await generateRefreshToken({
+      userId: user.id,
+      username: user.username,
+      role: user.role,
+    })
+
+    const accessCookie = serialize('token', accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
       path: '/',
-      maxAge: 60 * 15, // 15分钟
-    });
+      sameSite: 'lax',
+      maxAge: 60 * 60,
+    })
 
-    const refreshCookie = serialize('refresh_token', refreshToken, {
+    const refreshCookie = serialize('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7天
-    });
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
+    })
 
-    const res = NextResponse.json({ message: '登录成功' });
-    res.headers.set('Set-Cookie', [accessCookie, refreshCookie]);
-
-    return res;
+    return new NextResponse(
+      JSON.stringify({
+        message: '登录成功',
+        id: user.id,
+        username: user.username,
+        nickname: user.nickname,
+        avatar: user.avatar,
+        role: user.role,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Set-Cookie': [accessCookie, refreshCookie].join(', '),
+          'Content-Type': 'application/json',
+        },
+      },
+    )
   } catch (error) {
-    console.error('登录接口异常:', error);
-    return NextResponse.json({ message: '服务器错误' }, { status: 500 });
+    console.error('登录失败:', error)
+    return NextResponse.json({ message: '服务器错误' }, { status: 500 })
   }
 }

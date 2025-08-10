@@ -5,7 +5,8 @@
 /* 自定义全局样式 */
 @layer base {
   html {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 
   body {
@@ -15,7 +16,7 @@
   *,
   ::before,
   ::after {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 }
 
@@ -25,4 +26,16 @@
 
 @layer utilities {
   /* 可添加扩展工具类 */
+
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+
+  .text-foreground {
+    color: hsl(var(--foreground));
+  }
+
+  .border-border {
+    border-color: hsl(var(--border));
+  }
 }
