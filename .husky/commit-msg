@@ -1,8 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 [ "${HUSKY:-1}" = "0" ] && exit 0
-# 没有提交消息文件就直接退出（兼容某些 IDE）
-[ -n "$1" ] || exit 0
-
-npx --no -- commitlint --edit "$1"
+MSG_FILE="${1:-.git/COMMIT_EDITMSG}"
+npx --no -- commitlint --edit "$MSG_FILE"

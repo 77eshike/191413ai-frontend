@@ -1,13 +1,10 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# 允许通过 HUSKY=0 跳过
 [ "${HUSKY:-1}" = "0" ] && exit 0
 
-# 仅当有暂存文件时跑 lint-staged
+# 是否有暂存代码
 if git diff --cached --name-only --diff-filter=ACMR | grep -q .; then
   echo "🔍 lint-staged running..."
   npx --no -- lint-staged || exit 1
 else
-  echo "→ No staged files found."
+  echo "→ No staged files."
 fi
