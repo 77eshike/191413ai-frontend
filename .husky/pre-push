@@ -4,10 +4,10 @@
 [ "${HUSKY:-1}" = "0" ] && exit 0
 
 echo "pre-push: quick checks (non-blocking)"
-# 严格模式才阻塞
+# 只有严格模式才阻塞
 if [ "${HUSKY_STRICT:-0}" = "1" ]; then
-  npx --no -- eslint -c eslint.config.js --max-warnings=0
-  npx --no -- prettier -c .
+  npx --no -- eslint -c eslint.config.js --max-warnings=0 || exit 1
+  npx --no -- prettier -c . || exit 1
 fi
 echo "pre-push finished (non-blocking)."
 exit 0
