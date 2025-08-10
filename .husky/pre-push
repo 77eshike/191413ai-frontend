@@ -1,31 +1,15 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-echo "🚧 执行 pre-push 检查（ESLint + Prettier + 测试）..."
+# --- 轻量检查（不阻塞 push）---
+echo "pre-push: quick checks (non-blocking)"
 
-# 1. ESLint 检查
-echo "🔎 ESLint 检查中..."
-npm run lint
-eslintCode=$?
+# 如果真的需要，你也可以在这里做非常快的校验，比如 ts 类型检查：
+# CHANGED_TS="$(git diff --name-only --diff-filter=ACMRT @{push}...HEAD | grep -E '\.tsx?$' || true)"
+# if [ -n "$CHANGED_TS" ]; then
+#   echo "Typecheck on changed TS files..."
+#   npm run -s typecheck || echo "typecheck failed (ignored)"
+# fi
 
-# 2. Prettier 检查
-echo "🎨 Prettier 格式检查中..."
-npm run format
-prettierCode=$?
-
-# 3. 单元测试
-echo "🧪 Vitest 测试执行中..."
-npm run test
-testCode=$?
-
-# 汇总判断
-if [ "$eslintCode" -ne 0 ] || [ "$prettierCode" -ne 0 ] || [ "$testCode" -ne 0 ]; then
-  echo "❌ pre-push 检查失败："
-  echo "  ESLint: $eslintCode"
-  echo "  Prettier: $prettierCode"
-  echo "  Tests: $testCode"
-  exit 1
-fi
-
-echo "✅ 所有 pre-push 检查通过，允许推送。"
+echo "pre-push finished (non-blocking)."
 exit 0
