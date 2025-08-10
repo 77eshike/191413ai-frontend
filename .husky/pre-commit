@@ -1,6 +1,11 @@
-# .husky/pre-commit
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-echo "🔍 Running lint-staged (ESLint + Prettier checks)..."
-npx lint-staged || exit 1
+set -e
+
+# 仅当有暂存文件时才跑 lint-staged（避免 "No staged files" 报错）
+if git diff --cached --name-only --diff-filter=ACMRT | grep -q .; then
+  npx lint-staged
+else
+  echo "No staged files. Skipping lint-staged."
+fi
