@@ -1,6 +1,6 @@
 // eslint.config.js
 import js from '@eslint/js'
-import tseslint from 'typescript-eslint' // 聚合包（含 recommendedTypeChecked）
+import tseslint from 'typescript-eslint'
 import tsParser from '@typescript-eslint/parser'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 import react from 'eslint-plugin-react'
@@ -9,7 +9,7 @@ import unused from 'eslint-plugin-unused-imports'
 import globals from 'globals'
 
 export default [
-  // 1) 全局忽略（取代 .eslintignore）
+  // 1) 全局忽略
   {
     ignores: [
       '**/.next/**',
@@ -21,7 +21,7 @@ export default [
     ],
   },
 
-  // 2) 源码（Type-aware 打开）
+  // 2) 源码（Type-aware）
   {
     files: ['src/**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
@@ -61,20 +61,20 @@ export default [
       // import 清理
       'unused-imports/no-unused-imports': 'error',
 
-      // 控制台降噪
+      // 默认对 console 警告（非白名单文件）
       'no-console': 'warn',
 
-      // Promise / 事件处理
+      // Promise/事件处理
       '@typescript-eslint/no-misused-promises': [
         'error',
         { checksVoidReturn: { attributes: false } },
       ],
       '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true, ignoreIIFE: true }],
 
-      // 与 Prettier 对齐 + 强制 LF（去除 ␍）
+      // 与 Prettier 对齐（强制 LF）
       'prettier/prettier': ['error', { endOfLine: 'lf' }],
 
-      // 临时放宽：优先让 CI 通过，后续再收紧
+      // 临时放宽
       '@typescript-eslint/no-empty-interface': 'off',
       'no-unused-expressions': 'warn',
       'no-empty': ['warn', { allowEmptyCatch: true }],
@@ -88,7 +88,7 @@ export default [
     },
   },
 
-  // 3) Client 端禁止引入 *.server.*（默认）
+  // 3) Client 端禁止导入 *.server.*
   {
     files: ['src/**/*.{ts,tsx,js,jsx}'],
     rules: {
@@ -107,20 +107,23 @@ export default [
     },
   },
 
-  // 4) Server 文件白名单：关闭上面的限制
+  // 4) ✅ Server 侧白名单：关闭 no-console + 关闭导入限制
   {
     files: [
       'src/app/**/route.{ts,tsx}',
+      'src/app/**/actions.{ts,tsx}',
       'src/app/**/page.{ts,tsx}',
       'src/app/**/layout.{ts,tsx}',
       'src/app/**/loading.{ts,tsx}',
-      'src/app/**/actions.{ts,tsx}',
       'src/**/*.server.{ts,tsx,js,jsx}',
     ],
-    rules: { 'no-restricted-imports': 'off' },
+    rules: {
+      'no-console': 'off',
+      'no-restricted-imports': 'off',
+    },
   },
 
-  // 5) Storybook/Example 放宽（避免示例代码导致 CI 红）
+  // 5) Storybook/Example 放宽（避免示例导致 CI 红）
   {
     files: ['**/*.stories.{ts,tsx}', '**/Example.{ts,tsx}'],
     rules: {
@@ -133,7 +136,7 @@ export default [
     },
   },
 
-  // 6) 测试文件（非 type-aware）
+  // 6) 测试（非 type-aware）
   {
     files: ['**/*.test.{ts,tsx,js,jsx}'],
     languageOptions: {
@@ -163,7 +166,7 @@ export default [
     },
   },
 
-  // 7) 工具/配置文件（非 type-aware）
+  // 7) 工具/配置（非 type-aware）
   {
     files: [
       '*.config.{js,cjs,mjs,ts}',
