@@ -39,3 +39,8 @@ dhparam.pem
 acme/
 certs/
 data/certs/
+
+# tooling artifacts
+.fix-ci-backup/
+*.patch
+logs-*.tar.gz
