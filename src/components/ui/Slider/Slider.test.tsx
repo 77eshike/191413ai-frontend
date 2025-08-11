@@ -10,7 +10,7 @@ describe('Slider', () => {
     expect(slider).toHaveAttribute('aria-valuenow', '30')
   })
 
-  it('应响应键盘交互（向右增加）', async () => {
+  it('应响应键盘交互（向右增� ）', async () => {
     const user = userEvent.setup()
     render(<Slider defaultValue={[20]} step={10} max={100} />)
     const slider = screen.getByRole('slider')

@@ -14,7 +14,7 @@ export default function ExampleModalForm() {
         isOpen={open}
         onClose={() => setOpen(false)}
         title="创建项目"
-        onSubmit={async (values) => {
+        onSubmit={async values => {
           alert(`提交成功：${JSON.stringify(values)}`)
           return true
         }}

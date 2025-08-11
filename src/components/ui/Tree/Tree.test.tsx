@@ -4,7 +4,7 @@ import { Tree, TreeNode } from './Tree'
 const sampleData: TreeNode[] = [
   {
     id: 'root',
-    label: '根节点',
+    label: '� �节点',
     children: [
       {
         id: 'child',
@@ -23,7 +23,7 @@ const sampleData: TreeNode[] = [
 describe('Tree', () => {
   it('renders root node label', () => {
     render(<Tree data={sampleData} />)
-    expect(screen.getByText('根节点')).toBeInTheDocument()
+    expect(screen.getByText('� �节点')).toBeInTheDocument()
   })
 
   it('expands and collapses nodes on toggle click', () => {
@@ -38,7 +38,7 @@ describe('Tree', () => {
   it('calls onSelect callback when node clicked', () => {
     const mockSelect = vi.fn()
     render(<Tree data={sampleData} onSelect={mockSelect} />)
-    fireEvent.click(screen.getByText('根节点'))
+    fireEvent.click(screen.getByText('� �节点'))
     expect(mockSelect).toHaveBeenCalledWith(sampleData[0])
   })
 })

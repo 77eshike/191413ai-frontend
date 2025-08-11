@@ -18,7 +18,7 @@ export default function ProjectDetailPage() {
         const data = await getProjectById(id)
         setProject(data)
       } catch (error) {
-        console.error('加载项目失败:', error)
+        console.error('� 载项目失败:', error)
       } finally {
         setLoading(false)
       }

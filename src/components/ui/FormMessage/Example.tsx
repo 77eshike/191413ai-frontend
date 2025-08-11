@@ -36,7 +36,7 @@ export default function FormMessageExample() {
         className="w-full px-3 py-2 border rounded"
         placeholder="example@email.com"
       />
-      <FormMessage type={error ? 'error' : 'success'}>{error || '邮箱格式正确'}</FormMessage>
+      <FormMessage type={error ? 'error' : 'success'}>{error || '邮箱� �式正确'}</FormMessage>
     </div>
   )
 }

@@ -5,7 +5,7 @@ import { Tree } from './Tree'
 const treeData = [
   {
     key: '1',
-    label: '根节点',
+    label: '� �节点',
     children: [
       {
         key: '1-1',

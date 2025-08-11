@@ -6,13 +6,13 @@ describe('Toast', () => {
     render(
       <ToastProvider>
         <Toast open>
-          <ToastTitle>测试标题</ToastTitle>
+          <ToastTitle>测试� �题</ToastTitle>
           <ToastDescription>描述内容</ToastDescription>
         </Toast>
       </ToastProvider>,
     )
 
-    expect(screen.getByText('测试标题')).toBeInTheDocument()
+    expect(screen.getByText('测试� �题')).toBeInTheDocument()
     expect(screen.getByText('描述内容')).toBeInTheDocument()
   })
 })

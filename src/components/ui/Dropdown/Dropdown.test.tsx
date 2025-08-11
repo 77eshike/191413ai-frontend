@@ -1,23 +1,16 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Dropdown } from './Dropdown'
+import { describe, it, expect, vi } from 'vitest'
+import { screen, setup } from '@/test/test-utils'
+import * as Mod from './Dropdown'
 
-const options = [
-  { label: '一号', value: '1' },
-  { label: '二号', value: '2' },
-]
+const Dropdown: any = (Mod as any).Dropdown ?? (Mod as any).default
 
 describe('Dropdown', () => {
-  it('renders placeholder correctly', () => {
-    render(<Dropdown options={options} onSelect={() => {}} />)
-    expect(screen.getByText('请选择')).toBeInTheDocument()
-  })
+  it('confirmable footer works', async () => {
+    const onConfirm = vi.fn()
+    const { user } = setup(<Dropdown defaultOpen confirmable onConfirm={onConfirm} />)
 
-  it('opens and selects option', () => {
-    const onSelect = vi.fn()
-    render(<Dropdown options={options} onSelect={onSelect} />)
-    fireEvent.click(screen.getByText('请选择'))
-    fireEvent.click(screen.getByText('一号'))
-    expect(onSelect).toHaveBeenCalledWith('1')
+    const confirm = screen.getByTestId('dropdown-confirm-button')
+    await user.click(confirm)
+    expect(onConfirm).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,44 +1,41 @@
-import React, { ReactNode } from 'react'
-import clsx from 'clsx'
+'use client'
 
-export interface ModalProps {
-  isOpen: boolean
-  onClose: () => void
-  title?: string
-  children: ReactNode
-  footer?: ReactNode
-  width?: 'sm' | 'md' | 'lg'
+import React from 'react'
+import { createPortal } from 'react-dom'
+import { cn } from '@/lib/utils'
+
+interface ModalProps {
+  open: boolean
+  onClose?: () => void
+  className?: string
+  children?: React.ReactNode
 }
 
-export const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  footer,
-  width = 'md',
-}) => {
-  if (!isOpen) return null
+export default function Modal({ open, onClose, className, children }: ModalProps) {
+  if (!open) return null
 
-  const widthClass = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-2xl',
-  }[width]
+  const stop = (e: React.MouseEvent) => e.stopPropagation()
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className={clsx('bg-white rounded-lg shadow-lg w-full p-6', widthClass)}>
-        {title && <h2 className="text-lg font-semibold mb-4">{title}</h2>}
-        <div className="mb-4">{children}</div>
-        {footer && <div className="mt-4">{footer}</div>}
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-        >
-          ×
-        </button>
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 grid place-items-center"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className={cn('relative z-10 bg-white rounded shadow p-4 min-w-[320px]', className)}
+        onClick={stop}
+      >
+        <div className="text-right">
+          <button type="button" onClick={onClose} className="px-2 py-1 text-sm bg-gray-200 rounded">
+            Close
+          </button>
+        </div>
+        {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

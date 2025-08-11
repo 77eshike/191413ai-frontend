@@ -16,7 +16,7 @@ describe('Fieldset', () => {
   it('renders without legend if not provided', () => {
     const { container } = render(
       <Fieldset>
-        <span>æ— æ ‡é¢˜</span>
+        <span>æ— æ ‡é¢˜</span>
       </Fieldset>,
     )
     expect(container.querySelector('legend')).toBeNull()

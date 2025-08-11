@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Form } from './Form';
-import { action } from '@storybook/addon-actions';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Form } from './Form'
+import { action } from '@storybook/addon-actions'
 
 const meta: Meta<typeof Form> = {
   title: 'Components/Form',
   component: Form,
   tags: ['autodocs'],
-};
+}
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof Form>;
+type Story = StoryObj<typeof Form>
 
 export const Default: Story = {
   args: {
@@ -22,4 +22,4 @@ export const Default: Story = {
     onChange: action('字段更改'),
     onSubmit: action('表单提交'),
   },
-};
+}

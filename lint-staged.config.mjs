@@ -1,5 +1,4 @@
-// lint-staged.config.mjs
 export default {
-  '*.{js,jsx,ts,tsx}': ['eslint --fix'],
-  '*.{json,md,css,scss,html}': ['prettier --write'],
+  '**/*.{ts,tsx,js,jsx}': ['prettier --write', 'eslint --fix'],
+  '**/*.{json,md,css,scss,html,yml,yaml}': ['prettier --write'],
 }

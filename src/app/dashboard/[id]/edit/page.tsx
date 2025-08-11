@@ -44,7 +44,7 @@ export default function EditProjectPage() {
     }
   }
 
-  if (isLoading) return <p>加载中...</p>
+  if (isLoading) return <p>� 载中...</p>
   if (error) return <p className="text-red-500">{error}</p>
 
   return (

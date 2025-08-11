@@ -69,7 +69,7 @@ export function useUpdateProject() {
   return { update }
 }
 
-// 删除项目
+// � 除项目
 export function useDeleteProject() {
   const deleteProject = useCallback(async (id: number) => {
     const res = await fetch('/api/projects/delete', {
@@ -80,7 +80,7 @@ export function useDeleteProject() {
 
     if (!res.ok) {
       const data = await res.json()
-      throw new Error(data.message || '项目删除失败')
+      throw new Error(data.message || '项目� 除失败')
     }
   }, [])
 

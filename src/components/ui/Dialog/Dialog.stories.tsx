@@ -1,21 +1,21 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Dialog } from './Dialog';
-import { useState } from 'react';
-import { Button } from '../Button/Button';
-import { action } from '@storybook/addon-actions';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Dialog } from './Dialog'
+import { useState } from 'react'
+import { Button } from '../Button/Button'
+import { action } from '@storybook/addon-actions'
 
 const meta: Meta<typeof Dialog> = {
   title: 'Components/Feedback/Dialog',
   component: Dialog,
-};
+}
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof Dialog>;
+type Story = StoryObj<typeof Dialog>
 
 export const Default: Story = {
   render: () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
       <>
@@ -25,11 +25,11 @@ export const Default: Story = {
           description="这是一个简单的 Dialog 示例"
           isOpen={isOpen}
           onClose={() => {
-            setIsOpen(false);
-            action('Dialog 已关闭')();
+            setIsOpen(false)
+            action('Dialog 已关闭')()
           }}
         />
       </>
-    );
+    )
   },
-};
+}

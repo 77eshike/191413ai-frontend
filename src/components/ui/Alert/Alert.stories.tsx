@@ -20,7 +20,7 @@ export const Info: Story = {
 export const Error: Story = {
   args: {
     title: '错误',
-    description: '无法连接到服务器，请检查网络。',
+    description: '� 法连接到服务器，请检查网络。',
     variant: 'error',
   },
 }

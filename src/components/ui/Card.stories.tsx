@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Card>
 
 export const Default: Story = {
   args: {
-    title: '卡片标题',
+    title: '卡片� �题',
     description: '这是卡片的说明文字内容，支持多行展示。',
   },
 }

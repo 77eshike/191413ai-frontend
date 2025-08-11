@@ -8,16 +8,9 @@ export default function ExampleAvatarUploader() {
 
   return (
     <div className="p-4 space-y-4">
-      <AvatarUploader
-        value={avatarUrl}
-        onChange={(url) => setAvatarUrl(url)}
-      />
+      <AvatarUploader value={avatarUrl} onChange={url => setAvatarUrl(url)} />
       {avatarUrl && (
-        <img
-          src={avatarUrl}
-          alt="上传后的头像"
-          className="w-16 h-16 rounded-full border"
-        />
+        <img src={avatarUrl} alt="上� 后的头像" className="w-16 h-16 rounded-full border" />
       )}
     </div>
   )

@@ -13,9 +13,14 @@ export default function UserTable() {
   const [users, setUsers] = useState<User[]>([])
 
   useEffect(() => {
-    axios.get('/api/admin/users').then(res => {
-      setUsers(res.data)
-    })
+    void (async () => {
+      try {
+        const res = await axios.get('/api/admin/users')
+        setUsers(res.data)
+      } catch {
+        // 可以放 toast 提示
+      }
+    })()
   }, [])
 
   const updateRole = async (id: number, role: string) => {
@@ -40,13 +45,13 @@ export default function UserTable() {
             <td className="border p-2 space-x-2">
               <button
                 className="px-2 py-1 text-xs bg-green-100 rounded"
-                onClick={() => updateRole(user.id, 'admin')}
+                onClick={() => void updateRole(user.id, 'admin')}
               >
                 设为管理员
               </button>
               <button
                 className="px-2 py-1 text-xs bg-red-100 rounded"
-                onClick={() => updateRole(user.id, 'user')}
+                onClick={() => void updateRole(user.id, 'user')}
               >
                 降为普通用户
               </button>

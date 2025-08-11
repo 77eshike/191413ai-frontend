@@ -12,9 +12,9 @@ export async function DELETE(req: Request) {
 
   try {
     await pool.query('DELETE FROM projects WHERE id = ? AND owner_id = ?', [id, user.userId])
-    return NextResponse.json({ message: '删除成功' })
+    return NextResponse.json({ message: '� 除成功' })
   } catch (error) {
-    console.error('删除项目失败:', error)
-    return NextResponse.json({ message: '项目删除失败' }, { status: 500 })
+    console.error('� 除项目失败:', error)
+    return NextResponse.json({ message: '项目� 除失败' }, { status: 500 })
   }
 }

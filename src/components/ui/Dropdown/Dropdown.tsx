@@ -1,66 +1,107 @@
-import React, { useState, useRef, useEffect } from 'react'
-import clsx from 'clsx'
+'use client'
 
-export interface DropdownOption {
-  label: string
-  value: string
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+
+export interface DropdownItem {
+  key: string
+  label: React.ReactNode
+  onSelect?: () => void
 }
 
-export interface DropdownProps {
-  options: DropdownOption[]
-  selected?: string
-  onSelect: (value: string) => void
-  placeholder?: string
+export interface DropdownProps extends React.HTMLAttributes<HTMLDivElement> {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  trigger?: React.ReactNode
+  items?: DropdownItem[]
+  /** 是否显示页脚的确定/取消按钮 */
+  confirmable?: boolean
+  onConfirm?: () => void
+  onCancel?: () => void
+  confirmText?: React.ReactNode
+  cancelText?: React.ReactNode
+  confirmAriaLabel?: string
+  cancelAriaLabel?: string
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
-  options,
-  selected,
-  onSelect,
-  placeholder = '请选择',
+  open,
+  defaultOpen,
+  onOpenChange,
+  trigger = <button className="border rounded px-2 py-1">更多</button>,
+  items = [],
+  confirmable = false,
+  onConfirm,
+  onCancel,
+  confirmText = '确定',
+  cancelText = '取消',
+  confirmAriaLabel = 'confirm',
+  cancelAriaLabel = 'cancel',
+  className,
+  ...rest
 }) => {
-  const [open, setOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [innerOpen, setInnerOpen] = React.useState(!!defaultOpen)
+  const isOpen = open ?? innerOpen
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  const handleSelect = (value: string) => {
-    onSelect(value)
-    setOpen(false)
+  const setOpen = (v: boolean) => {
+    if (open === undefined) setInnerOpen(v)
+    onOpenChange?.(v)
   }
 
   return (
-    <div className="relative inline-block w-48" ref={dropdownRef}>
-      <button
-        onClick={() => setOpen(prev => !prev)}
-        className="w-full px-4 py-2 text-left bg-white border rounded shadow"
-      >
-        {options.find(opt => opt.value === selected)?.label || placeholder}
-      </button>
-      {open && (
-        <ul className="absolute z-10 w-full mt-2 bg-white border rounded shadow">
-          {options.map(opt => (
-            <li
-              key={opt.value}
-              onClick={() => handleSelect(opt.value)}
-              className={clsx(
-                'px-4 py-2 cursor-pointer hover:bg-gray-100',
-                selected === opt.value && 'bg-gray-100 font-bold',
-              )}
-            >
-              {opt.label}
-            </li>
-          ))}
-        </ul>
+    <div className={cn('relative inline-block', className)} {...rest}>
+      <span onClick={() => setOpen(!isOpen)}>{trigger}</span>
+      {isOpen && (
+        <div role="menu" className="absolute z-10 mt-1 min-w-40 rounded border bg-white shadow">
+          <ul className="py-1">
+            {items.map(it => (
+              <li key={it.key}>
+                <button
+                  role="menuitem"
+                  className="w-full text-left px-3 py-1 hover:bg-gray-50"
+                  onClick={() => {
+                    it.onSelect?.()
+                    setOpen(false)
+                  }}
+                >
+                  {it.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+          {confirmable && (
+            <div className="flex justify-end gap-2 border-t p-2">
+              <button
+                type="button"
+                aria-label={cancelAriaLabel}
+                data-testid="dropdown-cancel-button"
+                className="px-2 py-1 rounded border"
+                onClick={() => {
+                  onCancel?.()
+                  setOpen(false)
+                }}
+              >
+                {cancelText}
+              </button>
+              <button
+                type="button"
+                aria-label={confirmAriaLabel}
+                data-testid="dropdown-confirm-button"
+                className="px-2 py-1 rounded bg-blue-600 text-white"
+                onClick={() => {
+                  onConfirm?.()
+                  setOpen(false)
+                }}
+              >
+                {confirmText}
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )
 }
+
+export default Dropdown

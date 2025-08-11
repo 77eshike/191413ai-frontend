@@ -1,12 +1,16 @@
-'use client'
+import React, { createContext } from 'react'
 
-import * as React from 'react'
-import { TooltipProvider as RadixTooltipProvider } from '@radix-ui/react-tooltip'
+export const TooltipContext = createContext<{ defaultOpen: boolean }>({ defaultOpen: true })
 
-interface TooltipProviderProps {
+function TooltipProviderBase({
+  children,
+  defaultOpen = false, // Provider 下默认关闭
+}: {
   children: React.ReactNode
+  defaultOpen?: boolean
+}) {
+  return <TooltipContext.Provider value={{ defaultOpen }}>{children}</TooltipContext.Provider>
 }
 
-export function TooltipProvider({ children }: TooltipProviderProps) {
-  return <RadixTooltipProvider>{children}</RadixTooltipProvider>
-}
+export default TooltipProviderBase
+export { TooltipProviderBase as TooltipProvider }

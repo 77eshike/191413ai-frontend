@@ -40,14 +40,14 @@ export function useAvatarUpload() {
 
       const avatarUrl = res.data.avatarUrl
       toast({
-        title: '上传成功',
+        title: '上� 成功',
         description: '头像已成功更新',
       })
 
       return avatarUrl
     } catch (error) {
       toast({
-        title: '上传失败',
+        title: '上� 失败',
         description: axios.isAxiosError(error)
           ? (error.response?.data?.message ?? '网络错误')
           : '未知错误',

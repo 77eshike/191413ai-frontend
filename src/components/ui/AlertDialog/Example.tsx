@@ -7,11 +7,11 @@ import { Button } from '../Button'
 export default function Example() {
   return (
     <AlertDialog
-      title="删除确认"
+      title="� 除确认"
       onConfirm={() => {
-        alert('已删除')
+        alert('已� 除')
       }}
-      trigger={<Button>删除</Button>}
+      trigger={<Button>� 除</Button>}
     />
   )
 }

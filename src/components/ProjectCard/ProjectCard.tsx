@@ -21,7 +21,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       className="cursor-pointer rounded-lg border p-4 shadow-sm hover:shadow-md transition"
     >
       <h3 className="text-lg font-semibold mb-1">{project.name}</h3>
-      <p className="text-sm text-gray-600">{project.description || '暂无描述'}</p>
+      <p className="text-sm text-gray-600">{project.description || '暂� 描述'}</p>
     </div>
   )
 }

@@ -1,60 +1,91 @@
-// src/components/ui/ModalForm/ModalForm.tsx
-import React from 'react'
+'use client'
 
-interface ModalFormProps {
-  isOpen: boolean
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+
+export interface ModalFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'title'> {
+  open: boolean
+  title?: React.ReactNode
   onClose: () => void
-  onSubmit: (formData: Record<string, string>) => void
-  title?: string
+  okText?: React.ReactNode
+  cancelText?: React.ReactNode
+  /** 用于测试/可访问性：提交按钮的 aria-label */
+  okAriaLabel?: string
+  /** 用于测试/可访问性：取消按钮的 aria-label */
+  cancelAriaLabel?: string
+  /** 点击外层是否关闭，默认 true */
+  closeOnBackdrop?: boolean
+  className?: string
+  bodyClassName?: string
+  footerClassName?: string
 }
 
-export const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, title }) => {
-  const [formData, setFormData] = React.useState({ name: '', email: '' })
+export const ModalForm = ({
+  open,
+  title,
+  onClose,
+  okText = '提交',
+  cancelText = '取消',
+  okAriaLabel = 'confirm',
+  cancelAriaLabel = 'cancel',
+  closeOnBackdrop = true,
+  className,
+  bodyClassName,
+  footerClassName,
+  children,
+  onSubmit,
+  ...formProps
+}: ModalFormProps) => {
+  const titleId = React.useId()
 
-  if (!isOpen) return null
+  if (!open) return null
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(formData)
-    onClose()
+  const handleDialogClick = () => {
+    if (closeOnBackdrop) onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-      <div className="bg-white rounded-md p-6 w-full max-w-md shadow-xl">
-        {title && <h2 className="text-lg font-semibold mb-4">{title}</h2>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-          <input
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-          <div className="flex justify-end space-x-2">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={title ? titleId : undefined}
+      className="fixed inset-0 grid place-items-center"
+      onClick={handleDialogClick}
+    >
+      <div
+        className={cn('bg-white rounded shadow p-4 min-w-[320px]', className)}
+        onClick={handleContainerClick}
+      >
+        {title ? (
+          <h2 id={titleId} className="text-base font-medium mb-2">
+            {title}
+          </h2>
+        ) : null}
+
+        <form onSubmit={onSubmit} {...formProps}>
+          <div className={cn('my-3', bodyClassName)}>{children}</div>
+
+          <div className={cn('flex gap-2 justify-end', footerClassName)}>
             <button
               type="button"
+              aria-label={cancelAriaLabel}
+              data-testid="modal-cancel-button"
               onClick={onClose}
-              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              className="px-3 py-1 rounded border"
             >
-              Cancel
+              {cancelText}
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              aria-label={okAriaLabel}
+              data-testid="modal-confirm-button"
+              className="px-3 py-1 rounded bg-blue-600 text-white"
             >
-              Submit
+              {okText}
             </button>
           </div>
         </form>
@@ -62,3 +93,5 @@ export const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit,
     </div>
   )
 }
+
+export default ModalForm

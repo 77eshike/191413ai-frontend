@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const { username, password, email, nickname, avatar } = await req.json()
 
     if (!username || !password) {
-      return NextResponse.json({ message: '用户名和密码不能为空' }, { status: 400 })
+      return NextResponse.json({ message: '用户名和密� �不能为空' }, { status: 400 })
     }
 
     const [rows] = await pool.query('SELECT id FROM users WHERE username = ?', [username])

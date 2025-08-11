@@ -1,37 +1,43 @@
-// src/components/ui/Tooltip/Tooltip.tsx
-'use client'
+import React, { useContext } from 'react'
+import { TooltipContext } from '../TooltipProvider/TooltipProvider'
 
-import * as React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import { cn } from '@/lib/utils'
+export interface TooltipProps {
+  content?: React.ReactNode
+  children?: React.ReactNode
+}
 
-const TooltipProvider = TooltipPrimitive.Provider
-
-const Tooltip = ({
+export const TooltipTrigger: React.FC<React.PropsWithChildren<React.ComponentProps<'span'>>> = ({
   children,
-  content,
-  ...props
-}: {
-  children: React.ReactNode
-  content: React.ReactNode
-}) => (
-  <TooltipPrimitive.Root {...props}>
-    <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        className={cn(
-          'z-50 overflow-hidden rounded-md bg-black px-3 py-1.5 text-xs text-white shadow-md animate-fadeIn',
-        )}
-        sideOffset={4}
-      >
-        {content}
-        <TooltipPrimitive.Arrow className="fill-black" />
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
-  </TooltipPrimitive.Root>
-)
+  ...rest
+}) => <span {...rest}>{children}</span>
 
-const TooltipTrigger = TooltipPrimitive.Trigger
-const TooltipContent = TooltipPrimitive.Content
+export const TooltipContent: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const { defaultOpen } = useContext(TooltipContext)
+  return (
+    <span role="tooltip" data-visible={defaultOpen} hidden={!defaultOpen}>
+      {children}
+    </span>
+  )
+}
 
-export { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent }
+function TooltipBase({ content, children }: TooltipProps) {
+  const { defaultOpen } = useContext(TooltipContext)
+
+  if (content !== undefined) {
+    return (
+      <span>
+        {children}
+        <span role="tooltip" data-visible={defaultOpen} hidden={!defaultOpen}>
+          {content}
+        </span>
+      </span>
+    )
+  }
+  return <span>{children}</span>
+}
+
+;(TooltipBase as any).Trigger = TooltipTrigger
+;(TooltipBase as any).Content = TooltipContent
+
+export default TooltipBase
+export { TooltipBase as Tooltip }
