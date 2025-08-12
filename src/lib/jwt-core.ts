@@ -1,50 +1,50 @@
-// src/lib/jwt-core.ts
-import { SignJWT, jwtVerify } from 'jose'
-import dotenv from 'dotenv'
+// src/lib/jwt.ts
+import { cookies } from 'next/headers'
+import type { NextRequest } from 'next/server'
+import {
+  type JwtPayload,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+} from './jwt-core'
 
-dotenv.config()
-
-const secret = process.env.JWT_SECRET!
-const encoder = new TextEncoder()
-const decoder = new TextDecoder()
-
-const secretKey = encoder.encode(secret)
-
-export interface TokenPayload {
-  userId: number
-  username: string
-  role: string
-  iat?: number
-  exp?: number
-  [key: string]: unknown // ✅ 添加这一行兼容 JWTPayload 要求
+// 统一导出（兼容旧代� �）
+export {
+  type JwtPayload,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
 }
 
-// 签发 AccessToken
-export async function generateAccessToken(payload: TokenPayload): Promise<string> {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('30m') // 可根据需要调整
-    .sign(secretKey)
+// 从请求（NextRequest）解析用户：优先读 Authorization，其次读 Cookie
+export async function getUserFromRequest(req: NextRequest): Promise<JwtPayload | null> {
+  try {
+    // 1) Authorization: Bearer xxx
+    const auth = req.headers.get('authorization') ?? req.headers.get('Authorization')
+    if (auth?.startsWith('Bearer ')) {
+      const token = auth.slice('Bearer '.length).trim()
+      return verifyAccessToken(token)
+    }
+
+    // 2) Cookies: access_token
+    const cookieToken =
+      req.cookies.get('access_token')?.value || (await cookies()).get('access_token')?.value
+    if (cookieToken) {
+      return verifyAccessToken(cookieToken)
+    }
+
+    return null
+  } catch {
+    return null
+  }
 }
 
-// 签发 RefreshToken
-export async function generateRefreshToken(payload: TokenPayload): Promise<string> {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(secretKey)
-}
-
-// 验证 AccessToken
-export async function verifyToken(token: string): Promise<TokenPayload> {
-  const { payload } = await jwtVerify<TokenPayload>(token, secretKey)
-  return payload
-}
-
-// 验证 RefreshToken
-export async function verifyRefreshToken(token: string): Promise<TokenPayload> {
-  const { payload } = await jwtVerify<TokenPayload>(token, secretKey)
-  return payload
+// 如果� 需要一次性生成两种 token：
+export function generateTokens(payload: JwtPayload) {
+  return {
+    accessToken: generateAccessToken(payload),
+    refreshToken: generateRefreshToken(payload),
+  }
 }

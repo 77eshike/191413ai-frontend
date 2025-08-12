@@ -11,7 +11,7 @@ const meta: Meta<typeof DropdownMenu> = {
 export default meta
 type Story = StoryObj<typeof DropdownMenu>
 
-// 占位示例
+// � 位示例
 export const usage: Story = {
   render: () => <div className="p-4">DropdownMenu usage 示例未定义</div>,
 }

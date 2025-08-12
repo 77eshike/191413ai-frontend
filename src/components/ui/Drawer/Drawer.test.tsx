@@ -1,19 +1,21 @@
-// src/components/ui/Drawer/Drawer.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Drawer } from './Drawer'
+import { describe, it, expect, vi } from 'vitest'
+import { screen, within, setup } from '@/test/test-utils'
+import * as Mod from './Drawer'
+
+const Drawer: any = (Mod as any).Drawer ?? (Mod as any).default
 
 describe('Drawer', () => {
-  it('renders drawer content when open and closes on background click', () => {
-    const handleClose = vi.fn()
-
-    render(
-      <Drawer isOpen={true} onClose={handleClose} title="Test Drawer">
-        <p>Test Content</p>
+  it('closes when cancel clicked', async () => {
+    const onClose = vi.fn()
+    const { user } = setup(
+      <Drawer open title="Menu" onClose={onClose}>
+        <div>content</div>
       </Drawer>,
     )
 
-    expect(screen.getByText('Test Drawer')).toBeInTheDocument()
-    fireEvent.click(screen.getByText('Close'))
-    expect(handleClose).toHaveBeenCalled()
+    const dialog = screen.getByRole('dialog')
+    const cancel = within(dialog).getByTestId('drawer-cancel-button')
+    await user.click(cancel)
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 })

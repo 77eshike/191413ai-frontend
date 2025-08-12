@@ -18,6 +18,6 @@ describe('Table', () => {
 
   it('renders empty state when no data', () => {
     render(<Table<Row> data={[]} columns={columns} />)
-    expect(screen.getByText('无数据')).toBeInTheDocument()
+    expect(screen.getByText('� 数据')).toBeInTheDocument()
   })
 })

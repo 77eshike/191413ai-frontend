@@ -34,7 +34,7 @@ export function Table<T extends Record<string, any>>({
           {data.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="text-center px-4 py-6 text-gray-400">
-                无数据
+                � 数据
               </td>
             </tr>
           ) : (

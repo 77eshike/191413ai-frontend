@@ -17,7 +17,7 @@ export default function ExampleDropdown() {
       <Dropdown
         options={options}
         value={selected}
-        onChange={(val) => setSelected(val)}
+        onChange={val => setSelected(val)}
         placeholder="请选择一个选项"
       />
       {selected && <div className="text-sm text-gray-500">已选中：{selected}</div>}

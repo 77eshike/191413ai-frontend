@@ -1,29 +1,27 @@
-// src/components/ui/Collapse/Collapse.tsx
 import React, { useState } from 'react'
-import { cn } from '@/lib/utils'
 
 export interface CollapseProps {
-  title: string
-  children: React.ReactNode
-  defaultOpen?: boolean
+  title: React.ReactNode
+  isOpen?: boolean
+  onToggle?: () => void
+  children?: React.ReactNode
 }
 
-export const Collapse: React.FC<CollapseProps> = ({ title, children, defaultOpen = false }) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen)
-
+function CollapseBase({ title, isOpen, onToggle, children }: CollapseProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = isOpen ?? internalOpen
+  const toggle = () => {
+    onToggle?.()
+    if (isOpen === undefined) setInternalOpen(o => !o)
+  }
   return (
-    <div className="border rounded">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          'w-full px-4 py-2 text-left font-medium flex justify-between items-center',
-          'bg-gray-100 hover:bg-gray-200',
-        )}
-      >
-        <span>{title}</span>
-        <span>{isOpen ? '▲' : '▼'}</span>
+    <div>
+      <button type="button" onClick={toggle}>
+        {title}
       </button>
-      {isOpen && <div className="p-4 border-t">{children}</div>}
+      {open ? <div>{children}</div> : null}
     </div>
   )
 }
+export default CollapseBase
+export { CollapseBase as Collapse }

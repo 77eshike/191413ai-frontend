@@ -12,11 +12,11 @@ type Story = StoryObj<typeof AlertDialog>
 
 export const Default: Story = {
   args: {
-    title: '确认删除',
-    description: '你确定要删除这条数据吗？操作不可撤销。',
-    confirmText: '删除',
+    title: '确认� 除',
+    description: '� 确定要� 除这条数据吗？操作不可撤销。',
+    confirmText: '� 除',
     cancelText: '取消',
-    trigger: <button className="px-3 py-1 bg-red-600 text-white rounded">删除</button>,
+    trigger: <button className="px-3 py-1 bg-red-600 text-white rounded">� 除</button>,
     onConfirm: () => alert('已确认'),
   },
 }

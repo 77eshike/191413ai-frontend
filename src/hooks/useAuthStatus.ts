@@ -1,49 +1,58 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
 
-type User = {
-  id: number
-  username: string
-  nickname: string
-  email: string
-  avatar: string
-  role: string
+interface Me {
+  userId?: number
+  username?: string
+  nickname?: string
+  role?: string
+  [k: string]: any
 }
 
-export function useAuthStatus(options?: { redirectToLogin?: boolean }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export function useAuthStatus() {
+  const [user, setUser] = useState<Me | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const router = useRouter()
+  const refresh = useCallback(async () => {
+    const controller = new AbortController()
+    try {
+      setIsLoading(true)
+      const res = await fetch('/api/me', {
+        cache: 'no-store',
+        signal: controller.signal,
+      })
+      if (res.ok) {
+        const data: Me = await res.json()
+        setUser(data)
+      } else {
+        setUser(null)
+      }
+    } catch {
+      setUser(null)
+    } finally {
+      setIsLoading(false)
+      // 不需要在这里 abort；controller 会在本次调用结束时被回收
+    }
+    return () => controller.abort()
+  }, [])
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get('/api/me')
-        setUser(res.data)
-      } catch (err) {
-        setError('未登录或获取用户失败')
-        setUser(null)
-
-        if (options?.redirectToLogin) {
-          router.replace('/login')
-        }
-      } finally {
-        setLoading(false)
-      }
+    let cancelled = false
+    const run = async () => {
+      await refresh()
+      if (cancelled) return
     }
-
-    fetchUser()
-  }, [options?.redirectToLogin, router])
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [refresh])
 
   return {
     user,
-    loading,
-    error,
+    isLoading,
     isAuthenticated: !!user,
+    refresh, // 手动刷新：登录/退出后可调用
   }
 }

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Select } from './Select'
+import Select from './Select' // ✅ 默认导入
 
 const meta: Meta<typeof Select> = {
   title: 'UI/Select',
@@ -16,6 +16,6 @@ export const BasicSelect: Story = {
       { label: '选项 B', value: 'b' },
     ],
     value: 'a',
-    onChange: val => console.log('选中:', val),
+    onChange: (val: string) => console.log('选中:', val),
   },
 }

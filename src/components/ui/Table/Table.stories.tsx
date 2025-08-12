@@ -16,7 +16,7 @@ export const DefaultTable: Story = {
       { key: 'age', label: '年龄' },
     ],
     data: [
-      { name: '张三', age: 28 },
+      { name: '� 三', age: 28 },
       { name: '李四', age: 35 },
     ],
   },

@@ -19,7 +19,7 @@ export default function ImagePreviewerExample() {
   return (
     <div className="space-y-4 max-w-md">
       <label htmlFor="upload" className="block text-sm font-medium">
-        上传图片
+        上� 图片
       </label>
       <input
         id="upload"

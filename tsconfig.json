@@ -1,16 +1,20 @@
-// tsconfig.json
 {
   "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "plugins": [{ "name": "next" }],
+    "types": ["react", "react-dom", "node"] // ⬅️ 去掉 vite/vitest
+  },
   "include": [
-    ".storybook",
-    "commitlint.config.cjs",
     "next-env.d.ts",
-    "postcss.config.mjs",
-    "prettier.config.js",
     "src",
-    "tailwind.config.js",
-    "vitest.config.ts",
-    "vitest.setup.ts",
-    ".next/types/**/*.ts"
+    ".storybook", // 如不想让 Storybook 参与 Next 检查可删除这一行
+    "tailwind.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    ".next/types" // ✅ 避免污染
   ]
 }

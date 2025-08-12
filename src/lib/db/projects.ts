@@ -44,7 +44,7 @@ export async function updateProject(
   return result.affectedRows > 0
 }
 
-// 删除项目
+// � 除项目
 export async function deleteProject(id: number): Promise<boolean> {
   const [result] = await pool.query<ResultSetHeader>('DELETE FROM projects WHERE id = ?', [id])
   return result.affectedRows > 0

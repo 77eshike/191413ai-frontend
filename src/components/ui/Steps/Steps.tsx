@@ -1,55 +1,79 @@
+'use client'
+
 import React from 'react'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
-export interface Step {
-  title: string
-  description?: string
-  status?: 'wait' | 'process' | 'finish' | 'error'
+type Status = 'wait' | 'process' | 'finish' | 'error'
+
+export interface StepItem {
+  title: React.ReactNode
+  description?: React.ReactNode
+  status?: Status
 }
 
-export interface StepsProps {
-  steps: Step[]
-  current: number
-  direction?: 'horizontal' | 'vertical'
-  className?: string
+export interface StepsProps extends React.HTMLAttributes<HTMLOListElement> {
+  /** 显式传 items，或用 <Steps.Item/> 作为 children 二选一 */
+  items?: StepItem[]
+  /** 当前步骤索引（从 0 开始），仅在未指定 item.status 时用于推导 */
+  current?: number
+  children?: React.ReactNode
 }
 
-export const Steps: React.FC<StepsProps> = ({
-  steps,
-  current,
-  direction = 'horizontal',
-  className,
-}) => {
+function iconByStatus(status: Status, index: number) {
+  if (status === 'finish') return <span aria-hidden>✓</span>
+  if (status === 'error') return <span aria-hidden>!</span>
+  if (status === 'process') return <span aria-hidden>{index + 1}</span>
+  return <span aria-hidden>{index + 1}</span>
+}
+
+export function Steps({ items, current = 0, children, className, ...rest }: StepsProps) {
+  const childItems: StepItem[] =
+    items ??
+    (React.Children.toArray(children)
+      .map((c: any) => {
+        if (c?.type?.displayName === 'Steps.Item') {
+          return { title: c.props.title, description: c.props.description, status: c.props.status }
+        }
+        return null
+      })
+      .filter(Boolean) as StepItem[])
+
   return (
-    <div className={clsx('flex', direction === 'vertical' ? 'flex-col' : 'flex-row', className)}>
-      {steps.map((step, index) => {
-        const status = index < current ? 'finish' : index === current ? 'process' : 'wait'
-
+    <ol className={cn('flex items-start gap-6', className)} {...rest}>
+      {childItems.map((it, idx) => {
+        const derived: Status =
+          it.status ?? (idx < current ? 'finish' : idx === current ? 'process' : 'wait')
         return (
-          <div
-            key={index}
-            className={clsx(
-              'flex items-start',
-              direction === 'vertical' ? 'mb-4' : 'mr-8',
-              'last:mr-0 last:mb-0',
-            )}
-          >
-            <div
-              className="flex items-center justify-center w-6 h-6 rounded-full text-white text-sm font-bold"
-              style={{
-                backgroundColor:
-                  status === 'finish' ? '#52c41a' : status === 'process' ? '#1890ff' : '#d9d9d9',
-              }}
+          <li key={idx} className="flex items-start gap-3">
+            <span
+              className={cn(
+                'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs',
+                derived === 'finish' && 'bg-green-600 text-white border-green-600',
+                derived === 'process' && 'bg-blue-600 text-white border-blue-600',
+                derived === 'error' && 'bg-red-600 text-white border-red-600',
+              )}
+              aria-label={derived}
             >
-              {status === 'finish' ? '✓' : index + 1}
+              {iconByStatus(derived, idx)}
+            </span>
+            <div>
+              <div className="font-medium">{it.title}</div>
+              {it.description ? (
+                <div className="text-xs text-gray-500 mt-0.5">{it.description}</div>
+              ) : null}
             </div>
-            <div className="ml-2">
-              <div className="font-medium">{step.title}</div>
-              {step.description && <div className="text-sm text-gray-500">{step.description}</div>}
-            </div>
-          </div>
+          </li>
         )
       })}
-    </div>
+    </ol>
   )
 }
+
+function StepsItem(_props: StepItem) {
+  // 仅用于声明式 children，真实渲染在 Steps 内部完成
+  return null
+}
+StepsItem.displayName = 'Steps.Item'
+
+Steps.Item = StepsItem as unknown as React.FC<StepItem>
+export default Steps

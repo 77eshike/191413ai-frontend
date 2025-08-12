@@ -3,7 +3,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 export interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode // ✅ 必须添加这一行
+  children: React.ReactNode // ✅ 必须添� 这一行
 }
 
 const CardContent = ({ children, className, ...props }: CardContentProps) => {

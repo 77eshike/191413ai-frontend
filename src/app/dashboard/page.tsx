@@ -10,14 +10,14 @@ export default function DashboardPage() {
   const router = useRouter()
 
   if (isLoading) {
-    return <p className="p-6">加载中...</p>
+    return <p className="p-6">� 载中...</p>
   }
 
   if (projects.length === 0) {
     return (
       <div className="p-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">暂无项目</h2>
-        <p className="text-gray-500 mb-4">你还没有创建任何项目，立即开始吧！</p>
+        <h2 className="text-xl font-semibold mb-2">暂� 项目</h2>
+        <p className="text-gray-500 mb-4">� 还没有创建任何项目，立即开始吧！</p>
         <button
           onClick={() => router.push('/dashboard/create')}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"

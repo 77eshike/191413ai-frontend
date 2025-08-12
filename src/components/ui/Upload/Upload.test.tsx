@@ -5,7 +5,7 @@ import { Upload } from './Upload'
 describe('Upload', () => {
   it('renders upload button', () => {
     render(<Upload onChange={() => {}} />)
-    expect(screen.getByRole('button', { name: '上传文件' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '上� 文件' })).toBeInTheDocument()
   })
 
   it('triggers file input click on button click', () => {

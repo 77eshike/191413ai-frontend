@@ -1,0 +1,170 @@
+diff --git a/src/components/ui/Card/Card.tsx b/src/components/ui/Card/Card.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Card/Card.tsx
+@@ -0,0 +1,18 @@
++import type { ReactNode } from 'react'
++
++type Props = {
++  className?: string
++  children?: ReactNode
++}
++
++export default function Card({ className, children }: Props) {
++  return (
++    <div className={`rounded border p-4 ${className ?? ''}`}>
++      {children}
++    </div>
++  )
++}
+diff --git a/src/components/ui/Card/index.ts b/src/components/ui/Card/index.ts
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Card/index.ts
+@@ -0,0 +1,2 @@
++export { default } from './Card'
++export * from './Card'
+diff --git a/src/components/ui/Tag/Tag.tsx b/src/components/ui/Tag/Tag.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Tag/Tag.tsx
+@@ -0,0 +1,23 @@
++type Props = {
++  text: string
++  color?: string
++  onRemove?: () => void
++}
++
++export default function Tag({ text, color = 'bg-gray-200 text-gray-800', onRemove }: Props) {
++  return (
++    <span className={`inline-flex items-center gap-2 px-2 py-0.5 rounded ${color}`}>
++      {text}
++      {onRemove && (
++        <button aria-label="remove tag" onClick={() => onRemove?.()}>
++          ×
++        </button>
++      )}
++    </span>
++  )
++}
+diff --git a/src/components/ui/Tag/index.ts b/src/components/ui/Tag/index.ts
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Tag/index.ts
+@@ -0,0 +1,2 @@
++export { default } from './Tag'
++export * from './Tag'
+diff --git a/src/components/ui/Progress/Progress.tsx b/src/components/ui/Progress/Progress.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Progress/Progress.tsx
+@@ -0,0 +1,18 @@
++type Props = { value: number; max?: number }
++
++export default function Progress({ value, max = 100 }: Props) {
++  const v = Math.max(0, Math.min(value, max))
++  const percent = (v / max) * 100
++  return (
++    <div role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={max} className="h-2 bg-gray-200 rounded">
++      <div style={{ width: `${percent}%` }} className="h-2 rounded bg-blue-600" />
++    </div>
++  )
++}
+diff --git a/src/components/ui/Progress/index.ts b/src/components/ui/Progress/index.ts
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Progress/index.ts
+@@ -0,0 +1,2 @@
++export { default } from './Progress'
++export * from './Progress'
+diff --git a/src/components/ui/Select/Select.tsx b/src/components/ui/Select/Select.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Select/Select.tsx
+@@ -0,0 +1,26 @@
++type Option = { value: string; label: string }
++type Props = { options: Option[]; value?: string; placeholder?: string; onChange?: (v: string) => void }
++
++export default function Select({ options, value, placeholder = '请选择', onChange }: Props) {
++  return (
++    <select
++      aria-label="select"
++      value={value ?? ''}
++      onChange={(e) => onChange?.(e.target.value)}
++      className="border rounded px-2 py-1"
++    >
++      <option value="" disabled>
++        {placeholder}
++      </option>
++      {options.map((op) => (
++        <option key={op.value} value={op.value}>
++          {op.label}
++        </option>
++      ))}
++    </select>
++  )
++}
+diff --git a/src/components/ui/Select/index.ts b/src/components/ui/Select/index.ts
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/Select/index.ts
+@@ -0,0 +1,2 @@
++export { default } from './Select'
++export * from './Select'
+diff --git a/src/components/ui/ModalForm/ModalForm.tsx b/src/components/ui/ModalForm/ModalForm.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/ModalForm/ModalForm.tsx
+@@ -0,0 +1,33 @@
++import type { ReactNode } from 'react'
++
++type Props = {
++  open: boolean
++  title: string
++  onClose: () => void
++  onSubmit: () => Promise<void>
++  children?: ReactNode
++}
++
++export default function ModalForm({ open, title, onClose, onSubmit, children }: Props) {
++  if (!open) return null
++  return (
++    <div role="dialog" aria-modal="true" className="fixed inset-0 grid place-items-center bg-black/40">
++      <div className="bg-white rounded p-4 w-[420px]">
++        <h2 className="text-lg font-semibold mb-3">{title}</h2>
++        <div className="mb-4">{children}</div>
++        <div className="flex justify-end gap-2">
++          <button onClick={() => onClose()} className="border rounded px-3 py-1">
++            取消
++          </button>
++          <button onClick={() => void onSubmit()} className="rounded px-3 py-1 bg-blue-600 text-white">
++            确定
++          </button>
++        </div>
++      </div>
++    </div>
++  )
++}
+diff --git a/src/components/ui/ModalForm/index.ts b/src/components/ui/ModalForm/index.ts
+new file mode 100644
+--- /dev/null
++++ b/src/components/ui/ModalForm/index.ts
+@@ -0,0 +1,2 @@
++export { default } from './ModalForm'
++export * from './ModalForm'
+diff --git a/src/components/ui/AvatarUploader/AvatarUploader.tsx b/src/components/ui/AvatarUploader/AvatarUploader.tsx
+--- a/src/components/ui/AvatarUploader/AvatarUploader.tsx
++++ b/src/components/ui/AvatarUploader/AvatarUploader.tsx
+@@ -1,5 +1,5 @@
+-<input accept="image/*" className="hidden" type="file"
++<input accept="image/*" className="hidden" type="file" data-testid="file-input"
+  /* 其它属性保持不变，例如 onChange 等 */
+  />
+diff --git a/src/components/ui/Tree/Tree.tsx b/src/components/ui/Tree/Tree.tsx
+--- a/src/components/ui/Tree/Tree.tsx
++++ b/src/components/ui/Tree/Tree.tsx
+@@ -1,6 +1,6 @@
+- {node.children.map((c) => (
++ {(node.children ?? []).map((c) => (
+    /* 渲染子节点 */
+  ))}

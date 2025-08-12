@@ -1,5 +1,10 @@
 import { render, screen } from '@testing-library/react'
+import { vi } from 'vitest'
 import Navbar from './Navbar'
+
+vi.mock('@/hooks/useAuthStatus', () => ({
+  useAuthStatus: () => ({ user: { username: 'tester' }, isLoading: false }),
+}))
 
 describe('Navbar', () => {
   it('renders brand text', () => {

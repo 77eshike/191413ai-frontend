@@ -1,4 +1,3 @@
-// src/components/ui/UploadExcel/UploadExcel.tsx
 import React, { useRef, useState } from 'react'
 import * as XLSX from 'xlsx'
 
@@ -23,12 +22,12 @@ export const UploadExcel = ({ onDataParsed, accept = '.xlsx,.xls' }: UploadExcel
     reader.onload = evt => {
       const bstr = evt.target?.result
       try {
-        const wb = XLSX.read(bstr, { type: 'binary' })
+        const wb = XLSX.read(bstr as string, { type: 'binary' })
         const wsname = wb.SheetNames[0]
         const ws = wb.Sheets[wsname]
-        const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
+        const data = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][]
         onDataParsed(data)
-      } catch (err) {
+      } catch {
         setError('解析 Excel 文件失败，请检查文件格式')
       }
     }
@@ -40,6 +39,7 @@ export const UploadExcel = ({ onDataParsed, accept = '.xlsx,.xls' }: UploadExcel
       <button
         onClick={() => inputRef.current?.click()}
         className="px-4 py-2 border rounded bg-gray-100 hover:bg-gray-200"
+        type="button"
       >
         导入 Excel
       </button>

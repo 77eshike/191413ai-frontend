@@ -8,11 +8,11 @@ export default function Example() {
     <Accordion
       items={[
         {
-          title: '标题一',
-          content: '内容一：这是折叠面板的内容。',
+          title: '� �题一',
+          content: '内容一：这是折� 面板的内容。',
         },
         {
-          title: '标题二',
+          title: '� �题二',
           content: '内容二：支持多项展开。',
         },
       ]}

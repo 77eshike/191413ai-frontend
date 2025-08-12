@@ -10,13 +10,11 @@ export default function ExampleUpload() {
     <div className="p-4 space-y-4">
       <Upload
         fileList={fileList}
-        onChange={(files) => setFileList(files)}
+        onChange={files => setFileList(files)}
         accept="image/*"
         multiple
       />
-      <div className="text-sm text-gray-500">
-        已上传文件数：{fileList.length}
-      </div>
+      <div className="text-sm text-gray-500">已上� 文件数：{fileList.length}</div>
     </div>
   )
 }

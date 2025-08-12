@@ -1,46 +1,42 @@
-// src/components/ui/Dialog/Dialog.test.tsx
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
-import { Dialog } from './Dialog'
+import * as Mod from './Dialog'
+
+const Dialog: any = (Mod as any).Dialog ?? (Mod as any).default
 
 describe('Dialog component', () => {
   it('renders correctly when open', () => {
-    const handleClose = vi.fn()
-
-    render(
-      <Dialog isOpen={true} onClose={handleClose} title="Test Dialog">
-        <p>Test Content</p>
+    const { container } = render(
+      <Dialog open title="Test Dialog" onClose={() => {}}>
+        <div>Test Content</div>
       </Dialog>,
     )
-
-    expect(screen.getByText('Test Dialog')).toBeInTheDocument()
-    expect(screen.getByText('Test Content')).toBeInTheDocument()
+    const dialog = within(container).getByRole('dialog')
+    expect(within(dialog).getByText('Test Dialog')).toBeInTheDocument()
+    expect(within(dialog).getByText('Test Content')).toBeInTheDocument()
   })
 
-  it('calls onClose when close button is clicked', () => {
-    const handleClose = vi.fn()
-
-    render(
-      <Dialog isOpen={true} onClose={handleClose} title="Test Dialog">
-        <p>Test Content</p>
+  it('calls onClose when close button is clicked', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    const { container } = render(
+      <Dialog open title="Test Dialog" onClose={onClose}>
+        <div>Test Content</div>
       </Dialog>,
     )
-
-    fireEvent.click(screen.getByText('Close'))
-    expect(handleClose).toHaveBeenCalled()
+    const dialog = within(container).getByRole('dialog')
+    const closeBtn = within(dialog).getByRole('button', { name: /close|关闭/i })
+    await user.click(closeBtn)
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 
-  it('does not render when isOpen is false', () => {
-    const handleClose = vi.fn()
-
+  it('does not render when closed', () => {
     render(
-      <Dialog isOpen={false} onClose={handleClose} title="Should Not Appear">
-        <p>Hidden Content</p>
+      <Dialog open={false} title="X" onClose={() => {}}>
+        <div>Hidden</div>
       </Dialog>,
     )
-
-    expect(screen.queryByText('Should Not Appear')).toBeNull()
-    expect(screen.queryByText('Hidden Content')).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 })

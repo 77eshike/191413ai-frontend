@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Modal } from './Modal'
+import Modal from './Modal' // ✅ 默认导入
 
 const meta: Meta<typeof Modal> = {
   title: 'UI/Modal',

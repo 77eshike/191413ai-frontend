@@ -1,2 +1,2 @@
-// src/components/ui/DatePicker/index.ts
+export { default } from './DatePicker'
 export * from './DatePicker'

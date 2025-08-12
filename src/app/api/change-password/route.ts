@@ -23,14 +23,14 @@ export async function PATCH(req: NextRequest) {
 
     const isMatch = await verifyPassword(oldPassword, user.password)
     if (!isMatch) {
-      return NextResponse.json({ message: '原密码错误' }, { status: 403 })
+      return NextResponse.json({ message: '原密� �错误' }, { status: 403 })
     }
 
     await updateUserPassword(user.id, newPassword)
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('修改密码失败:', error)
+    console.error('修改密� �失败:', error)
     return NextResponse.json({ message: '服务器内部错误' }, { status: 500 })
   }
 }

@@ -1,31 +1,40 @@
-'use client'
+import React, { useState } from 'react'
 
-import * as React from 'react'
-import * as RadixPopover from '@radix-ui/react-popover'
-import { cn } from '@/lib/utils'
+export interface PopoverProps {
+  trigger: React.ReactNode
+  children?: React.ReactNode
+  content?: React.ReactNode
+}
 
-const Popover = RadixPopover.Root
-const PopoverTrigger = RadixPopover.Trigger
-const PopoverAnchor = RadixPopover.Anchor
+function PopoverBase({ trigger, children, content }: PopoverProps) {
+  const [open, setOpen] = useState(false)
 
-const PopoverContent = React.forwardRef<
-  React.ElementRef<typeof RadixPopover.Content>,
-  React.ComponentPropsWithoutRef<typeof RadixPopover.Content>
->(({ className, align = 'center', sideOffset = 4, ...props }, ref) => (
-  <RadixPopover.Portal>
-    <RadixPopover.Content
-      ref={ref}
-      align={align}
-      sideOffset={sideOffset}
-      className={cn(
-        'z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none',
-        className,
+  const openIt = () => setOpen(true)
+
+  const renderTrigger = () => {
+    if (React.isValidElement(trigger)) {
+      const origOnClick = (trigger as any).props?.onClick
+      return React.cloneElement(trigger as any, {
+        onClick: (e: any) => {
+          origOnClick?.(e)
+          openIt()
+        },
+      })
+    }
+    return <span onClick={openIt}>{trigger}</span>
+  }
+
+  return (
+    <div>
+      {renderTrigger()}
+      {open && (
+        <div role="dialog" aria-modal="false">
+          {children ?? content}
+        </div>
       )}
-      {...props}
-    />
-  </RadixPopover.Portal>
-))
+    </div>
+  )
+}
 
-PopoverContent.displayName = RadixPopover.Content.displayName
-
-export { Popover, PopoverTrigger, PopoverAnchor, PopoverContent }
+export default PopoverBase
+export { PopoverBase as Popover }

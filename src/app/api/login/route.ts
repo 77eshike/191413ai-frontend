@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const { username, password } = await req.json()
 
     if (!username || !password) {
-      return NextResponse.json({ message: '用户名和密码不能为空' }, { status: 400 })
+      return NextResponse.json({ message: '用户名和密� �不能为空' }, { status: 400 })
     }
 
     const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM users WHERE username = ?', [
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
     if (!isPasswordValid) {
-      return NextResponse.json({ message: '密码错误' }, { status: 401 })
+      return NextResponse.json({ message: '密� �错误' }, { status: 401 })
     }
 
     const accessToken = await generateAccessToken({

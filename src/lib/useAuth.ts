@@ -1,9 +1,10 @@
+// src/lib/useAuth.ts
 'use client'
 
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-interface AuthUser {
+export interface AuthUser {
   userId: number
   username: string
   role: string
@@ -17,19 +18,16 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchMe = async () => {
+  const fetchMe = async (): Promise<void> => {
     try {
       setLoading(true)
-      const res = await axios.get('/api/me')
+      const res = await axios.get<AuthUser>('/api/me')
       setUser(res.data)
-    } catch (err) {
+      setError(null)
+    } catch (e: unknown) {
       setUser(null)
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 401) {
-          setError('未登录')
-        } else {
-          setError(err.message)
-        }
+      if (axios.isAxiosError(e)) {
+        setError(e.response?.status === 401 ? '未登录' : e.message)
       } else {
         setError('未知错误')
       }
@@ -38,15 +36,17 @@ export function useAuth() {
     }
   }
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       await axios.post('/api/logout')
       setUser(null)
-    } catch (err) {}
+    } catch {
+      // 忽略登出错误，前端状态已清
+    }
   }
 
   useEffect(() => {
-    fetchMe()
+    void fetchMe() // ✅ 避免 no-floating-promises
   }, [])
 
   return { user, loading, error, refresh: fetchMe, logout }

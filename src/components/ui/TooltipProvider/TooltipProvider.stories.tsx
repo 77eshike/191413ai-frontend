@@ -17,7 +17,7 @@ export const Default: Story = {
   render: () => (
     <TooltipProvider>
       <Tooltip content="提示信息">
-        <Button>鼠标悬停</Button>
+        <Button>� � �悬停</Button>
       </Tooltip>
     </TooltipProvider>
   ),

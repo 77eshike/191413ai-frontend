@@ -5,7 +5,7 @@ import { verifyRefreshToken, generateAccessToken } from '@/lib/auth'
 import { getRefreshTokenFromRequest } from '@/lib/auth'
 
 export async function POST() {
-  const refreshToken = await getRefreshTokenFromRequest() // ✅ 加上 await
+  const refreshToken = await getRefreshTokenFromRequest() // ✅ � 上 await
 
   if (!refreshToken) {
     return NextResponse.json({ message: '未提供 refreshToken' }, { status: 401 })
@@ -25,6 +25,6 @@ export async function POST() {
     return response
   } catch (error) {
     console.error('刷新 token 失败:', error)
-    return NextResponse.json({ message: '无效或过期的 refreshToken' }, { status: 401 })
+    return NextResponse.json({ message: '� 效或过期的 refreshToken' }, { status: 401 })
   }
 }

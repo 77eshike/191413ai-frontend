@@ -1,41 +1,31 @@
-// src/components/ui/Upload/Upload.tsx
 import React, { useRef } from 'react'
 
-interface UploadProps {
-  accept?: string
-  onChange: (file: File | null) => void
-  className?: string
+export interface UploadProps {
   label?: string
+  onChange?: (files: FileList) => void
+  onSelect?: (files: FileList) => void
 }
 
-export function Upload({ accept, onChange, className = '', label = '上传文件' }: UploadProps) {
-  const inputRef = useRef<HTMLInputElement>(null)
+function UploadBase({ label = '上� 文件', onChange, onSelect }: UploadProps) {
+  const ref = useRef<HTMLInputElement>(null)
 
-  const handleClick = () => {
-    inputRef.current?.click()
-  }
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null
-    onChange(file)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files) {
+      onChange?.(files)
+      onSelect?.(files)
+    }
   }
 
   return (
-    <div className={`inline-block ${className}`}>
-      <button
-        type="button"
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={handleClick}
-      >
+    <div>
+      <input ref={ref} type="file" style={{ display: 'none' }} onChange={handleChange} />
+      <button type="button" aria-label={label} onClick={() => ref.current?.click()}>
         {label}
       </button>
-      <input
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        onChange={handleChange}
-        className="hidden"
-      />
     </div>
   )
 }
+
+export default UploadBase
+export { UploadBase as Upload }

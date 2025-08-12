@@ -21,14 +21,14 @@ export function usePasswordChange() {
     }
     if (newPassword !== confirmPassword) {
       toast({
-        title: '两次密码不一致',
+        title: '两次密� �不一致',
         variant: 'destructive',
       })
       return false
     }
     if (newPassword.length < 6) {
       toast({
-        title: '密码太短',
+        title: '密� �太短',
         description: '请至少输入 6 个字符',
         variant: 'destructive',
       })
@@ -48,8 +48,8 @@ export function usePasswordChange() {
       })
 
       toast({
-        title: '密码修改成功',
-        description: '请使用新密码重新登录',
+        title: '密� �修改成功',
+        description: '请使用新密� �重新登录',
       })
 
       // 清空字段

@@ -1,38 +1,50 @@
-import React from 'react'
-import clsx from 'clsx'
+// src/components/ui/Badge/Badge.tsx
 
-export interface BadgeProps {
+type BadgeProps = {
+  /** 数字徽标值（会被 clamp 到 >= 0） */
   count?: number
-  maxCount?: number
-  showZero?: boolean
+  /** 点状徽标（只显示一个小圆点，不显示数字） */
   dot?: boolean
+  /** 当为 0 时是否也显示徽标（数字模式下显示 0） */
+  showZero?: boolean
+  /** 超出时显示为 “maxCount+” */
+  maxCount?: number
+  /** 包裹的元素/文本 */
   children?: React.ReactNode
 }
 
-export const Badge: React.FC<BadgeProps> = ({
-  count = 0,
-  maxCount = 99,
-  showZero = false,
-  dot = false,
-  children,
-}) => {
-  const displayCount = typeof count === 'number' && count > maxCount ? `${maxCount}+` : count
+function formatCount(count: number, maxCount: number) {
+  return count > maxCount ? `${maxCount}+` : String(count)
+}
 
-  const shouldDisplay = (typeof count === 'number' && count > 0) || (count === 0 && showZero) || dot
+function Badge({ count = 0, dot = false, showZero = false, maxCount = 99, children }: BadgeProps) {
+  const safeCount = Math.max(0, count)
+  const visible = dot || showZero || safeCount > 0
 
   return (
-    <div className="relative inline-block">
+    <span className="relative inline-block">
       {children}
-      {shouldDisplay && (
-        <span
-          className={clsx(
-            'absolute -top-1 -right-1 flex items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold',
-            dot ? 'w-2.5 h-2.5 p-0' : 'min-w-[18px] h-[18px] px-1',
-          )}
+      {visible ? (
+        <sup
+          className={[
+            'absolute -top-1 -right-1 rounded-full text-white text-center',
+            dot
+              ? // 点状徽标：纯装饰，不读屏
+                'w-2 h-2 p-0 bg-red-600'
+              : // 数字徽标：可读屏，尺寸与排版
+                'min-w-4 h-4 px-1 text-[10px] leading-4 bg-red-600',
+          ].join(' ')}
+          aria-hidden={dot || undefined}
+          role={dot ? undefined : 'status'}
+          aria-live={dot ? undefined : 'polite'}
+          aria-label={dot ? undefined : 'badge'}
         >
-          {!dot && displayCount}
-        </span>
-      )}
-    </div>
+          {dot ? null : formatCount(safeCount, maxCount)}
+        </sup>
+      ) : null}
+    </span>
   )
 }
+
+export default Badge
+export { Badge }
